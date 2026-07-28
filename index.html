@@ -56,6 +56,7 @@
     font-weight:600;letter-spacing:-.01em;margin:0 0 1.6rem;padding-left:1.1rem;
     border-left:3px solid var(--azul)}
   .lema b{color:var(--azul);font-weight:600}
+  #lema{transition:opacity .42s ease;min-height:2.9em}
   .cifras{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
   .cifra{background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;padding:1.1rem 1.2rem;box-shadow:var(--sombra)}
   .cifra b{display:block;font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.03em;
@@ -266,8 +267,7 @@
   <div class="env">
     <p class="kicker">Asamblea Legislativa de Costa Rica · 1998 – 2030</p>
     <h1>La evolución y el presente de la política costarricense, leídos en sus votos</h1>
-    <p class="lema">Un partido es lo que dice ser, hasta que hay que votar.<br>
-      <b>Esto es lo que votó.</b></p>
+    <p class="lema" id="lema" aria-live="polite"></p>
     <p>Cada votación es el momento en que un programa deja de ser discurso y se convierte en
       decisión, y queda registrada en un acta oficial. Este proyecto convierte ese registro en un
       análisis objetivo —sin encuestas, sin opinión, sin declaraciones— de cómo se ha movido el
@@ -580,6 +580,48 @@
 (() => {
   const D = JSON.parse(document.getElementById("datos").textContent);
   const nf = new Intl.NumberFormat("es-CR");
+
+  // ── Lemas ───────────────────────────────────────────────────────────────
+  // Todos dicen lo mismo por caminos distintos: que la palabra declarada y el
+  // voto emitido no siempre coinciden, y que aquí está el segundo. Rotan porque
+  // quien vuelve una segunda vez merece encontrar algo que no había leído.
+  const LEMAS = [
+    ["Un partido es lo que dice ser, hasta que hay que votar.", "Esto es lo que votó."],
+    ["La Asamblea es la foto del espectro político nacional.", "El acta de votaciones es el negativo."],
+    ["Las ideologías se declaran.", "Los votos se cuentan."],
+    ["En campaña se promete en singular.", "En el Plenario se vota en tablero."],
+    ["Nadie recuerda quién votó qué hace seis años.", "El acta sí."],
+    ["Una bancada se define por con quién vota,", "no por cómo se describe."],
+    ["El discurso se escribe para ser oído.", "El voto queda escrito para siempre."],
+    ["Aquí no hay encuestas, ni opinión, ni declaraciones.", "Hay 31 844 votaciones."],
+    ["La distancia entre dos partidos no la fija su retórica.", "La fija el tablero."],
+    ["Lo que se dijo en el Plenario está en las actas.", "Lo que se hizo, también."],
+    ["Los acuerdos se anuncian en conferencia de prensa.", "Se comprueban en el acta."],
+    ["Un voto no admite matices.", "Por eso dice tanto."],
+    ["Cuatro años de sesiones caben en una base de datos.", "Y esa base se puede preguntar."],
+    ["Toda legislatura deja un rastro.", "Este proyecto solo lo ordena."],
+    ["El poder real de una fracción no son sus curules.", "Son los votos que arrastra."],
+  ];
+
+  (() => {
+    const caja = document.getElementById("lema");
+    if (!caja) return;
+    // El primero se elige por el día, no al azar: quien comparte el enlace y
+    // quien lo abre ven lo mismo, y aun así cambia solo con el tiempo.
+    const dia = Math.floor(Date.now() / 86400000);
+    let i = dia % LEMAS.length;
+    const pintar = () => {
+      const [a, b] = LEMAS[i % LEMAS.length];
+      caja.innerHTML = `${a}<br><b>${b}</b>`;
+    };
+    pintar();
+    // Si alguien pidió menos movimiento, se queda el del día y no rota.
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setInterval(() => {
+      caja.style.opacity = "0";
+      setTimeout(() => { i++; pintar(); caja.style.opacity = "1"; }, 420);
+    }, 7000);
+  })();
   const ESTADOS = { publicado:"Disponible", en_preparacion:"En preparación", pendiente:"Pendiente" };
 
   // Portada
@@ -722,7 +764,19 @@
   const conEspectro = D.periodos.filter(p => p.metricas && p.metricas.convergencia
                                             && p.metricas.convergencia.disposicion);
   const sinEspectro = D.periodos.filter(p => !conEspectro.includes(p));
-  document.getElementById("espectros").innerHTML = conEspectro.map(p => {
+  // La ficha de los periodos sin mapa va PRIMERO: son los más antiguos y la
+  // sección se lee de 1998 al presente, como el resto de la página.
+  document.getElementById("espectros").innerHTML = (sinEspectro.length ? `
+    <div class="espectro espectro--vacio">
+      <p class="espectro-titulo">${sinEspectro.map(p => p.nombre).join(" · ")}</p>
+      <p class="espectro-nota">Sin mapa, y no por falta de análisis. El acta de estos
+        periodos da el conteo agregado —«cuarenta y dos a favor, seis en contra»— pero
+        <b>no dice quién votó qué</b>. Sin el voto nombre por nombre no hay forma de
+        saber de qué lado quedó cada bancada, y la afinidad no se puede calcular sin
+        inventarla. El voto nominal aparece en el corpus a partir de 2018.</p>
+      <p class="espectro-nota">Lo demás sí está: votaciones, expedientes, discurso,
+        asistencia y agenda. Las aplicaciones de esos periodos se abren igual.</p>
+    </div>` : "") + conEspectro.map(p => {
     const c = p.metricas.convergencia;
     const pts = c.disposicion.map(d => {
       const x = (d.x + 0.5) * 180 + 20, y = (0.5 - d.y) * 150 + 22;
@@ -755,17 +809,7 @@
         <b>${c.mas_distante.pct} %</b> el más distante<br>
         <span>${nf.format(c.divididas)} votaciones divididas</span></p>
     </a>`;
-  }).join("") + (sinEspectro.length ? `
-    <div class="espectro espectro--vacio">
-      <p class="espectro-titulo">${sinEspectro.map(p => p.nombre).join(" · ")}</p>
-      <p class="espectro-nota">Sin mapa, y no por falta de análisis. El acta de estos
-        periodos da el conteo agregado —«cuarenta y dos a favor, seis en contra»— pero
-        <b>no dice quién votó qué</b>. Sin el voto nombre por nombre no hay forma de
-        saber de qué lado quedó cada bancada, y la afinidad no se puede calcular sin
-        inventarla. El voto nominal aparece en el corpus a partir de 2018.</p>
-      <p class="espectro-nota">Lo demás sí está: votaciones, expedientes, discurso,
-        asistencia y agenda. Las aplicaciones de esos periodos se abren igual.</p>
-    </div>` : "");
+  }).join("");
 
   // ── Mapas de atención territorial ───────────────────────────────────────
   // Proyección equirectangular sobre el rectángulo que encierra al país. A esta
