@@ -18,16 +18,19 @@
 <meta name="twitter:card" content="summary">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --tinta:#0b1220; --suave:#5b6b84; --linea:#e4e9f2; --fondo:#f6f8fc; --tarjeta:#fff;
-    --azul:#2563eb; --verde:#0f9d6e; --ambar:#d97706; --rojo:#dc2626; --violeta:#7c3aed;
-    --sombra:0 1px 2px rgba(11,18,32,.04), 0 8px 24px rgba(11,18,32,.06);
-  }
-  @media (prefers-color-scheme:dark){
-    :root{ --tinta:#e8edf7; --suave:#93a3bd; --linea:rgba(255,255,255,.09); --fondo:#070c16;
-           --tarjeta:#0f1626; --azul:#60a5fa; --verde:#34d399; --ambar:#fbbf24; --rojo:#f87171;
-           --violeta:#a78bfa; --sombra:0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35); }
+    /* Misma paleta que las aplicaciones de análisis: azul marino y azul de la
+       bandera, con el rojo oficial como acento. La portada y los paneles se
+       veían como dos productos distintos porque esta usaba un azul genérico. */
+    --fondo:#02102e; --tarjeta:rgba(4,24,64,.74); --tinta:#ffffff;
+    --suave:#cdd9ef; --tenue:#93a4c4; --linea:rgba(120,170,255,.14);
+    --linea-viva:rgba(120,170,255,.30);
+    --azul:#1e74e8; --azul-hondo:#0b5cd6; --rojo:#ce1126; --verde:#0f9d6e;
+    --ambar:#f59e0b; --violeta:#a78bfa;
+    --sombra:0 1px 2px rgba(0,0,0,.35), 0 14px 40px rgba(0,0,0,.45);
   }
   *{box-sizing:border-box} html{scroll-behavior:smooth}
   body{margin:0;background:var(--fondo);color:var(--tinta);
@@ -60,7 +63,63 @@
   .cifra span{display:block;color:var(--suave);font-size:.82rem;margin-top:.15rem}
 
   /* Legislaturas */
-  .rejilla{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .rejilla{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+
+  /* ── Los tres niveles ─────────────────────────────────────────────────── */
+  .escalera{list-style:none;counter-reset:none;padding:0;margin:1.6rem 0 0;
+    display:grid;gap:.9rem}
+  .escalera li{display:flex;gap:1.1rem;align-items:flex-start;padding:1.1rem 1.2rem;
+    border:1px solid var(--linea);border-radius:14px;background:var(--tarjeta)}
+  .nivel-n{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;
+    place-items:center;font-weight:800;font-size:.95rem;color:#fff;
+    background:linear-gradient(140deg,var(--azul),var(--azul-hondo));
+    box-shadow:0 0 0 4px rgba(30,116,232,.14)}
+  .escalera h3{margin:.1rem 0 .35rem;font-size:1.02rem}
+  .escalera h3 em{font-style:normal;font-weight:500;color:var(--tenue);font-size:.9rem}
+  .escalera p{margin:0;color:var(--suave);font-size:.94rem;line-height:1.55}
+
+  /* ── Portada de hallazgos ─────────────────────────────────────────────── */
+  .portada{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+    margin-bottom:3rem}
+  .noticia{display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    padding:1.4rem;border:1px solid var(--linea);border-radius:18px;
+    background:var(--tarjeta);position:relative;overflow:hidden;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s}
+  /* Una franja de color por tipo de hallazgo: se distinguen sin leer. */
+  .noticia::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;
+    background:var(--azul)}
+  .noticia--afin::before{background:var(--verde)}
+  .noticia--leyes::before{background:var(--azul)}
+  .noticia--discurso::before{background:var(--ambar)}
+  .noticia--nominal::before{background:var(--rojo)}
+  .noticia:hover{transform:translateY(-4px);border-color:var(--linea-viva);
+    box-shadow:var(--sombra)}
+  .noticia-cifra{font-family:var(--font-display,inherit);font-size:clamp(2.1rem,4.4vw,2.9rem);
+    font-weight:800;line-height:1;letter-spacing:-.02em;margin:.5rem 0 .4rem}
+  .noticia h3{margin:0 0 .6rem;font-size:1.05rem;font-weight:600;line-height:1.35}
+  .noticia-texto{margin:0 0 1rem;color:var(--suave);font-size:.92rem;line-height:1.6}
+  .noticia-ir{margin-top:auto;font-size:.85rem;font-weight:600;color:var(--azul)}
+
+  /* ── Espectros comparables ────────────────────────────────────────────── */
+  .espectros{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .espectro{display:block;text-decoration:none;color:inherit;padding:1rem;
+    border:1px solid var(--linea);border-radius:16px;background:var(--tarjeta);
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s}
+  .espectro:hover{transform:translateY(-3px);border-color:var(--linea-viva)}
+  .espectro svg{width:100%;height:auto;display:block}
+  .espectro-titulo{margin:0 0 .2rem;font-weight:700;letter-spacing:.02em}
+  .espectro-pie{margin:.4rem 0 0;font-size:.8rem;color:var(--suave);line-height:1.5}
+  .espectro-pie span{color:var(--tenue)}
+  .espectro-nota{margin:.6rem 0 0;font-size:.86rem;color:var(--tenue);line-height:1.55}
+  .espectro--vacio{opacity:.72}
+  .espectro .pt{stroke:var(--fondo);stroke-width:2}
+  .espectro .pt-rot{font-size:9px;fill:var(--tenue)}
+  .espectro .lz{stroke:var(--azul);stroke-width:1.5}
+  .nota-fuente{margin:1rem 0 0;font-size:.86rem;color:var(--tenue)}
+
+  .per-gancho{margin:.7rem 0 0;font-size:.86rem;color:var(--suave);line-height:1.55}
+  .abrir span{display:block;font-weight:400;font-size:.76rem;color:var(--tenue);
+    margin-top:.15rem}
   .per{display:block;text-decoration:none;color:inherit;background:var(--tarjeta);
        border:1px solid var(--linea);border-radius:16px;padding:1.2rem 1.3rem;box-shadow:var(--sombra);
        transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .18s;position:relative;overflow:hidden}
@@ -191,6 +250,52 @@
 </div>
 
 <section class="env">
+  <!-- Lo primero que hay que entender: esto no es la aplicación, es la puerta.
+       Sin decirlo, el visitante se queda leyendo la portada y se va creyendo
+       que eso era todo. -->
+  <div class="niveles reveal">
+    <p class="kicker">Cómo está armado</p>
+    <h2>Tres niveles de profundidad</h2>
+    <p class="lede">Esta página es la portada. El análisis vive en ocho aplicaciones
+      separadas —una por legislatura— y hay que abrirlas.</p>
+    <ol class="escalera">
+      <li>
+        <span class="nivel-n">1</span>
+        <div>
+          <h3>La portada <em>— está aquí</em></h3>
+          <p>Los hallazgos que valen la pena de las ocho legislaturas, y las cifras
+            agregadas de 32 años. Todo estático: no calcula nada, muestra lo que las
+            aplicaciones ya calcularon.</p>
+        </div>
+      </li>
+      <li>
+        <span class="nivel-n">2</span>
+        <div>
+          <h3>La aplicación de cada legislatura <em>— hay que abrirla</em></h3>
+          <p>Ocho paneles independientes, uno por periodo constitucional, cada uno con
+            su propia base de datos. Ahí están las votaciones una por una, el perfil de
+            cada diputación, la convergencia entre bancadas y el análisis del discurso.
+            <b>Se encienden cuando alguien entra</b>: la primera carga tarda unos
+            segundos porque la instancia estaba apagada.</p>
+        </div>
+      </li>
+      <li>
+        <span class="nivel-n">3</span>
+        <div>
+          <h3>El acta original <em>— al final de cada dato</em></h3>
+          <p>Dentro de la aplicación, cada cifra lleva al acta de la que salió, con su
+            fecha y su número de sesión. Es el último nivel y el que importa: si algo
+            aquí está mal, ahí se comprueba.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- La portada de hallazgos. Va antes que los pilares a propósito: quien
+       llega no quiere leer una declaración de intenciones, quiere ver algo que
+       no sabía. Cada tarjeta termina en la aplicación de donde salió. -->
+  <div class="portada reveal" id="portada"></div>
+
   <div class="pilares reveal">
     <article class="pilar pilar--voto">
       <p class="kicker">Lo que se vota</p>
@@ -290,10 +395,22 @@
     </div>
   </div>
 
-  <h2>Elija una legislatura</h2>
-  <p class="lede">Cada periodo constitucional se procesa por separado y se publica con su propio
-    panel. Los periodos pendientes ya tienen su corpus identificado.</p>
+  <h2 id="abrir">Ocho aplicaciones, una por legislatura</h2>
+  <p class="lede">Cada una corre por su cuenta con la base de su periodo. Están apagadas
+    hasta que alguien entra —así el proyecto se sostiene sin presupuesto—, de modo que la
+    primera carga tarda unos segundos mientras la instancia despierta.</p>
   <div class="rejilla reveal" id="periodos"></div>
+</section>
+
+<section class="env">
+  <h2>El espectro político, legislatura por legislatura</h2>
+  <p class="lede">Cada bancada es un punto; la distancia entre dos es lo contrario de su
+    afinidad. Las que votaron juntas quedan cerca, las que se separaron quedan lejos.
+    <b>No es el eje izquierda-derecha</b>: dos partidos que se describen como opuestos
+    pueden votar igual nueve de cada diez veces, y eso una línea no lo puede mostrar.</p>
+  <div class="espectros reveal" id="espectros"></div>
+  <p class="nota-fuente">Es la proyección plana del modelo tridimensional que cada
+    aplicación permite girar. Toque cualquiera para abrirlo en su fuente.</p>
 </section>
 
 <section class="env">
@@ -304,8 +421,8 @@
 </section>
 
 <section class="env">
-  <h2>Hallazgos transversales</h2>
-  <p class="lede">Lecturas que solo aparecen al mirar el conjunto.</p>
+  <h2>El conjunto, en cifras</h2>
+  <p class="lede">Lo que solo se ve mirando los 32 años a la vez.</p>
   <div class="hallazgos reveal" id="hallazgos"></div>
 </section>
 
@@ -388,7 +505,7 @@
         concretos, y creo que la iniciativa ciudadana debe plasmarse en productos que cualquiera
         pueda usar, revisar y cuestionar.</p>
       <div class="contacto">
-        <a class="boton" href="https://github.com/Lapeyus/actas-plenario">Ver el código en GitHub</a>
+        <a class="boton" href="https://github.com/Lapeyus/asamblea-sombrilla">Ver el código en GitHub</a>
         <a class="boton boton--secundario" href="mailto:joseph.villarreal.lopez@gmail.com">Corregirme o apoyar el proyecto</a>
       </div>
     </div>
@@ -397,12 +514,12 @@
 
 <footer class="env">
   Proyecto de investigación ciudadana, de código abierto ·
-  <a href="https://github.com/Lapeyus/actas-plenario">código y metodología en GitHub</a>.
+  <a href="https://github.com/Lapeyus/asamblea-sombrilla">código y metodología en GitHub</a>.
   Los datos provienen de documentos públicos de la Asamblea Legislativa de Costa Rica y pueden
   verificarse contra el acta de cada sesión.
 </footer>
 
-<script id="datos" type="application/json">{"periodos": [{"id": "1998_2002", "nombre": "1998–2002", "actas": 172, "estado": "publicado", "url": null, "metricas": {"actas": 172, "desde": "2001-03-13", "diputaciones": 58, "divididas": 137, "expedientes": 719, "hasta": "2002-04-30", "intervenciones": 4121, "minutos": 18060, "unanimes_pct": 76.6, "votaciones": 586}}, {"id": "2002_2006", "nombre": "2002–2006", "actas": 766, "estado": "publicado", "url": null, "metricas": {"actas": 765, "desde": "2002-05-01", "diputaciones": 61, "divididas": 800, "expedientes": 1701, "hasta": "2006-04-27", "intervenciones": 23920, "minutos": 81190, "unanimes_pct": 71.7, "votaciones": 2828}}, {"id": "2006_2010", "nombre": "2006–2010", "actas": 865, "estado": "publicado", "url": null, "metricas": {"actas": 861, "desde": "2006-05-01", "diputaciones": 61, "divididas": 2988, "expedientes": 1811, "hasta": "2010-04-29", "intervenciones": 28845, "minutos": 105247, "unanimes_pct": 24.4, "votaciones": 3950}}, {"id": "2010_2014", "nombre": "2010–2014", "actas": 735, "estado": "publicado", "url": null, "metricas": {"actas": 734, "desde": "2010-05-01", "diputaciones": 65, "divididas": 5272, "expedientes": 2172, "hasta": "2014-04-29", "intervenciones": 22618, "minutos": 110527, "unanimes_pct": 12.2, "votaciones": 6002}}, {"id": "2014_2018", "nombre": "2014–2018", "actas": 760, "estado": "publicado", "url": null, "metricas": {"actas": 758, "desde": "2014-05-01", "diputaciones": 62, "divididas": 1611, "expedientes": 2090, "hasta": "2018-04-30", "intervenciones": 50538, "minutos": 98858, "unanimes_pct": 35.3, "votaciones": 2489}}, {"id": "2018_2022", "nombre": "2018–2022", "actas": 737, "estado": "publicado", "url": "https://plenario-2018-2022-56003335810.us-central1.run.app", "metricas": {"actas": 737, "desde": "2018-05-01", "diputaciones": 60, "divididas": 4363, "expedientes": 2016, "hasta": "2022-04-28", "intervenciones": 31914, "minutos": 93402, "unanimes_pct": 41.3, "votaciones": 7439}}, {"id": "2022_2026", "nombre": "2022–2026", "actas": 815, "estado": "publicado", "url": "https://plenario-2022-2026-56003335810.us-central1.run.app", "metricas": {"actas": 812, "desde": "2022-05-01", "diputaciones": 58, "divididas": 5804, "expedientes": 1247, "hasta": "2026-04-23", "intervenciones": 38780, "minutos": 90767, "unanimes_pct": 29.7, "votaciones": 8254}}, {"id": "2026_2030", "nombre": "2026–2030", "actas": 37, "estado": "publicado", "url": "https://plenario-2026-2030-56003335810.us-central1.run.app", "metricas": {"actas": 37, "desde": "2026-05-01", "diputaciones": 57, "divididas": 212, "expedientes": 79, "hasta": "2026-07-15", "intervenciones": 2184, "minutos": 7504, "unanimes_pct": 28.4, "votaciones": 296}}], "global": {"periodos": 8, "procesados": 8, "actas_corpus": 4887, "actas_procesadas": 4876, "votaciones": 31844, "intervenciones": 202920, "anios": 32}}</script>
+<script id="datos" type="application/json">{"periodos": [{"id": "1998_2002", "nombre": "1998–2002", "actas": 172, "estado": "publicado", "url": "https://plenario-1998-2002-56003335810.us-central1.run.app", "metricas": {"actas": 172, "cambios_fraccion": 57, "convergencia": null, "desde": "2001-03-13", "diputaciones": 58, "divididas": 137, "entidades": 3565, "expedientes": 719, "expedientes_votados": 204, "fracciones": 9, "hasta": "2002-04-30", "intervenciones": 4121, "leyes": 76, "menciones": 16915, "minutos": 18060, "mociones": 0, "palabras": 2760747, "unanimes_pct": 76.6, "votaciones": 586, "votaciones_con_nominal": 0, "votos_nominales": 0}}, {"id": "2002_2006", "nombre": "2002–2006", "actas": 766, "estado": "publicado", "url": "https://plenario-2002-2006-56003335810.us-central1.run.app", "metricas": {"actas": 765, "cambios_fraccion": 57, "convergencia": null, "desde": "2002-05-01", "diputaciones": 61, "divididas": 800, "entidades": 10823, "expedientes": 1701, "expedientes_votados": 294, "fracciones": 6, "hasta": "2006-04-27", "intervenciones": 23920, "leyes": 39, "menciones": 82111, "minutos": 81190, "mociones": 4, "palabras": 12583109, "unanimes_pct": 71.7, "votaciones": 2828, "votaciones_con_nominal": 0, "votos_nominales": 0}}, {"id": "2006_2010", "nombre": "2006–2010", "actas": 865, "estado": "publicado", "url": "https://plenario-2006-2010-56003335810.us-central1.run.app", "metricas": {"actas": 861, "cambios_fraccion": 57, "convergencia": null, "desde": "2006-05-01", "diputaciones": 61, "divididas": 2988, "entidades": 12330, "expedientes": 1811, "expedientes_votados": 366, "fracciones": 9, "hasta": "2010-04-29", "intervenciones": 28845, "leyes": 123, "menciones": 91257, "minutos": 105247, "mociones": 25, "palabras": 14808798, "unanimes_pct": 24.4, "votaciones": 3950, "votaciones_con_nominal": 0, "votos_nominales": 0}}, {"id": "2010_2014", "nombre": "2010–2014", "actas": 735, "estado": "publicado", "url": "https://plenario-2010-2014-56003335810.us-central1.run.app", "metricas": {"actas": 734, "cambios_fraccion": 57, "convergencia": null, "desde": "2010-05-01", "diputaciones": 65, "divididas": 5272, "entidades": 13748, "expedientes": 2172, "expedientes_votados": 452, "fracciones": 10, "hasta": "2014-04-29", "intervenciones": 22618, "leyes": 203, "menciones": 97949, "minutos": 110527, "mociones": 12, "palabras": 15317472, "unanimes_pct": 12.2, "votaciones": 6002, "votaciones_con_nominal": 0, "votos_nominales": 0}}, {"id": "2014_2018", "nombre": "2014–2018", "actas": 760, "estado": "publicado", "url": "https://plenario-2014-2018-56003335810.us-central1.run.app", "metricas": {"actas": 758, "cambios_fraccion": 57, "convergencia": null, "desde": "2014-05-01", "diputaciones": 62, "divididas": 1611, "entidades": 13504, "expedientes": 2090, "expedientes_votados": 526, "fracciones": 10, "hasta": "2018-04-30", "intervenciones": 50538, "leyes": 154, "menciones": 80406, "minutos": 98858, "mociones": 217, "palabras": 14173407, "unanimes_pct": 35.3, "votaciones": 2489, "votaciones_con_nominal": 0, "votos_nominales": 0}}, {"id": "2018_2022", "nombre": "2018–2022", "actas": 737, "estado": "publicado", "url": "https://plenario-2018-2022-56003335810.us-central1.run.app", "metricas": {"actas": 737, "cambios_fraccion": 57, "convergencia": {"disposicion": [{"color": "#6b7280", "fraccion": "No especificada", "sigla": "OTR", "x": 0.3054, "y": 0.06}, {"color": "#F9DC24", "fraccion": "Partido Acción Ciudadana", "sigla": "PAC", "x": 0.2137, "y": 0.3129}, {"color": "#FFEF00", "fraccion": "Partido Frente Amplio", "sigla": "FA", "x": -0.5, "y": -0.008}, {"color": "#6D4C9F", "fraccion": "Partido Integración Nacional", "sigla": "PIN", "x": 0.0036, "y": -0.3129}, {"color": "#008024", "fraccion": "Partido Liberación Nacional", "sigla": "PLN", "x": 0.3835, "y": -0.0065}, {"color": "#7A4C2E", "fraccion": "Partido Renovación Costarricense", "sigla": "PRSC", "x": 0.3312, "y": -0.222}, {"color": "#F58220", "fraccion": "Partido Restauración Nacional", "sigla": "PRN", "x": 0.5, "y": -0.0248}, {"color": "#005CA9", "fraccion": "Partido Unidad Social Cristiana", "sigla": "PUSC", "x": 0.4815, "y": 0.1373}], "divididas": 864, "mas_cercano": {"a": "No especificada", "b": "Partido Restauración Nacional", "n": 748, "pct": 92.9}, "mas_distante": {"a": "Partido Frente Amplio", "b": "Partido Restauración Nacional", "n": 806, "pct": 15.8}, "pares": [{"a": "No especificada", "b": "Partido Restauración Nacional", "n": 748, "pct": 92.9}, {"a": "Partido Liberación Nacional", "b": "Partido Restauración Nacional", "n": 851, "pct": 91.0}, {"a": "No especificada", "b": "Partido Liberación Nacional", "n": 744, "pct": 89.8}, {"a": "Partido Restauración Nacional", "b": "Partido Unidad Social Cristiana", "n": 792, "pct": 86.9}, {"a": "No especificada", "b": "Partido Unidad Social Cristiana", "n": 689, "pct": 84.8}, {"a": "Partido Liberación Nacional", "b": "Partido Unidad Social Cristiana", "n": 792, "pct": 84.2}, {"a": "No especificada", "b": "Partido Renovación Costarricense", "n": 643, "pct": 81.8}, {"a": "Partido Liberación Nacional", "b": "Partido Renovación Costarricense", "n": 735, "pct": 81.8}, {"a": "Partido Acción Ciudadana", "b": "Partido Liberación Nacional", "n": 846, "pct": 79.9}, {"a": "Partido Renovación Costarricense", "b": "Partido Restauración Nacional", "n": 736, "pct": 79.2}, {"a": "No especificada", "b": "Partido Acción Ciudadana", "n": 742, "pct": 75.9}, {"a": "Partido Acción Ciudadana", "b": "Partido Restauración Nacional", "n": 847, "pct": 73.7}, {"a": "Partido Renovación Costarricense", "b": "Partido Unidad Social Cristiana", "n": 686, "pct": 72.6}, {"a": "Partido Acción Ciudadana", "b": "Partido Unidad Social Cristiana", "n": 787, "pct": 66.8}, {"a": "Partido Integración Nacional", "b": "Partido Renovación Costarricense", "n": 532, "pct": 66.4}, {"a": "Partido Acción Ciudadana", "b": "Partido Renovación Costarricense", "n": 731, "pct": 66.1}, {"a": "Partido Integración Nacional", "b": "Partido Unidad Social Cristiana", "n": 575, "pct": 61.0}, {"a": "No especificada", "b": "Partido Integración Nacional", "n": 559, "pct": 60.1}, {"a": "Partido Integración Nacional", "b": "Partido Liberación Nacional", "n": 624, "pct": 58.0}, {"a": "Partido Integración Nacional", "b": "Partido Restauración Nacional", "n": 627, "pct": 55.8}, {"a": "Partido Frente Amplio", "b": "Partido Integración Nacional", "n": 593, "pct": 48.4}, {"a": "Partido Acción Ciudadana", "b": "Partido Integración Nacional", "n": 622, "pct": 43.1}, {"a": "Partido Acción Ciudadana", "b": "Partido Frente Amplio", "n": 801, "pct": 27.8}, {"a": "Partido Frente Amplio", "b": "Partido Renovación Costarricense", "n": 703, "pct": 27.6}, {"a": "Partido Frente Amplio", "b": "Partido Unidad Social Cristiana", "n": 750, "pct": 21.7}, {"a": "No especificada", "b": "Partido Frente Amplio", "n": 704, "pct": 21.0}, {"a": "Partido Frente Amplio", "b": "Partido Liberación Nacional", "n": 806, "pct": 19.7}, {"a": "Partido Frente Amplio", "b": "Partido Restauración Nacional", "n": 806, "pct": 15.8}]}, "desde": "2018-05-01", "diputaciones": 60, "divididas": 4363, "entidades": 8810, "expedientes": 2016, "expedientes_votados": 995, "fracciones": 9, "hasta": "2022-04-28", "intervenciones": 31914, "leyes": 553, "menciones": 53808, "minutos": 93402, "mociones": 7959, "palabras": 10126891, "unanimes_pct": 41.3, "votaciones": 7439, "votaciones_con_nominal": 1965, "votos_nominales": 89723}}, {"id": "2022_2026", "nombre": "2022–2026", "actas": 815, "estado": "publicado", "url": "https://plenario-2022-2026-56003335810.us-central1.run.app", "metricas": {"actas": 812, "cambios_fraccion": 66, "convergencia": {"disposicion": [{"color": "#94a3b8", "fraccion": "Independiente", "sigla": "IND", "x": 0.3698, "y": -0.1461}, {"color": "#FFEF00", "fraccion": "Partido Frente Amplio", "sigla": "FA", "x": -0.5, "y": -0.0289}, {"color": "#008024", "fraccion": "Partido Liberación Nacional", "sigla": "PLN", "x": 0.0969, "y": -0.2263}, {"color": "#F26522", "fraccion": "Partido Liberal Progresista", "sigla": "PLP", "x": 0.5, "y": -0.1004}, {"color": "#29ABE2", "fraccion": "Partido Nueva República", "sigla": "PNR", "x": 0.4208, "y": 0.0277}, {"color": "#00A4A7", "fraccion": "Partido Progreso Social Democrático", "sigla": "PPSD", "x": 0.4319, "y": 0.2263}, {"color": "#005CA9", "fraccion": "Partido Unidad Social Cristiana", "sigla": "PUSC", "x": 0.3231, "y": 0.0452}], "divididas": 4111, "mas_cercano": {"a": "Partido Nueva República", "b": "Partido Unidad Social Cristiana", "n": 4078, "pct": 94.3}, "mas_distante": {"a": "Partido Frente Amplio", "b": "Partido Progreso Social Democrático", "n": 4091, "pct": 11.2}, "pares": [{"a": "Partido Nueva República", "b": "Partido Unidad Social Cristiana", "n": 4078, "pct": 94.3}, {"a": "Independiente", "b": "Partido Liberal Progresista", "n": 3499, "pct": 90.7}, {"a": "Partido Liberal Progresista", "b": "Partido Unidad Social Cristiana", "n": 3730, "pct": 90.0}, {"a": "Independiente", "b": "Partido Unidad Social Cristiana", "n": 3809, "pct": 89.7}, {"a": "Partido Liberal Progresista", "b": "Partido Nueva República", "n": 3736, "pct": 89.7}, {"a": "Independiente", "b": "Partido Nueva República", "n": 3816, "pct": 89.5}, {"a": "Partido Nueva República", "b": "Partido Progreso Social Democrático", "n": 4095, "pct": 85.2}, {"a": "Partido Progreso Social Democrático", "b": "Partido Unidad Social Cristiana", "n": 4087, "pct": 83.4}, {"a": "Partido Liberal Progresista", "b": "Partido Progreso Social Democrático", "n": 3745, "pct": 79.3}, {"a": "Independiente", "b": "Partido Progreso Social Democrático", "n": 3826, "pct": 77.3}, {"a": "Independiente", "b": "Partido Liberación Nacional", "n": 3661, "pct": 73.0}, {"a": "Partido Liberación Nacional", "b": "Partido Nueva República", "n": 3926, "pct": 71.6}, {"a": "Partido Liberación Nacional", "b": "Partido Unidad Social Cristiana", "n": 3919, "pct": 71.6}, {"a": "Partido Liberación Nacional", "b": "Partido Liberal Progresista", "n": 3608, "pct": 68.8}, {"a": "Partido Liberación Nacional", "b": "Partido Progreso Social Democrático", "n": 3935, "pct": 60.5}, {"a": "Partido Frente Amplio", "b": "Partido Liberación Nacional", "n": 3923, "pct": 41.7}, {"a": "Independiente", "b": "Partido Frente Amplio", "n": 3814, "pct": 23.6}, {"a": "Partido Frente Amplio", "b": "Partido Unidad Social Cristiana", "n": 4075, "pct": 18.9}, {"a": "Partido Frente Amplio", "b": "Partido Nueva República", "n": 4082, "pct": 18.8}, {"a": "Partido Frente Amplio", "b": "Partido Liberal Progresista", "n": 3733, "pct": 15.6}, {"a": "Partido Frente Amplio", "b": "Partido Progreso Social Democrático", "n": 4091, "pct": 11.2}]}, "desde": "2022-05-01", "diputaciones": 58, "divididas": 5804, "entidades": 9612, "expedientes": 1247, "expedientes_votados": 1002, "fracciones": 8, "hasta": "2026-04-23", "intervenciones": 38780, "leyes": 547, "menciones": 55922, "minutos": 90767, "mociones": 5849, "palabras": 11248340, "unanimes_pct": 29.7, "votaciones": 8254, "votaciones_con_nominal": 7878, "votos_nominales": 372089}}, {"id": "2026_2030", "nombre": "2026–2030", "actas": 37, "estado": "publicado", "url": "https://plenario-2026-2030-56003335810.us-central1.run.app", "metricas": {"actas": 37, "cambios_fraccion": 57, "convergencia": {"disposicion": [{"color": "#C0392B", "fraccion": "Coalición Agenda Ciudadana", "sigla": "CAC", "x": -0.2271, "y": 0.2103}, {"color": "#FFEF00", "fraccion": "Partido Frente Amplio", "sigla": "FA", "x": -0.5, "y": 0.0102}, {"color": "#008024", "fraccion": "Partido Liberación Nacional", "sigla": "PLN", "x": 0.0504, "y": -0.1325}, {"color": "#8E44AD", "fraccion": "Partido Pueblo Soberano", "sigla": "PPSO", "x": 0.5, "y": -0.2103}, {"color": "#005CA9", "fraccion": "Partido Unidad Social Cristiana", "sigla": "PUSC", "x": 0.2434, "y": 0.1731}], "divididas": 92, "mas_cercano": {"a": "Partido Liberación Nacional", "b": "Partido Unidad Social Cristiana", "n": 85, "pct": 74.1}, "mas_distante": {"a": "Partido Frente Amplio", "b": "Partido Pueblo Soberano", "n": 92, "pct": 7.6}, "pares": [{"a": "Partido Liberación Nacional", "b": "Partido Unidad Social Cristiana", "n": 85, "pct": 74.1}, {"a": "Coalición Agenda Ciudadana", "b": "Partido Frente Amplio", "n": 87, "pct": 73.6}, {"a": "Coalición Agenda Ciudadana", "b": "Partido Liberación Nacional", "n": 87, "pct": 65.5}, {"a": "Partido Pueblo Soberano", "b": "Partido Unidad Social Cristiana", "n": 85, "pct": 61.2}, {"a": "Partido Liberación Nacional", "b": "Partido Pueblo Soberano", "n": 92, "pct": 57.6}, {"a": "Coalición Agenda Ciudadana", "b": "Partido Unidad Social Cristiana", "n": 81, "pct": 56.8}, {"a": "Partido Frente Amplio", "b": "Partido Liberación Nacional", "n": 92, "pct": 45.7}, {"a": "Partido Frente Amplio", "b": "Partido Unidad Social Cristiana", "n": 85, "pct": 35.3}, {"a": "Coalición Agenda Ciudadana", "b": "Partido Pueblo Soberano", "n": 87, "pct": 26.4}, {"a": "Partido Frente Amplio", "b": "Partido Pueblo Soberano", "n": 92, "pct": 7.6}]}, "desde": "2026-05-01", "diputaciones": 57, "divididas": 212, "entidades": 1230, "expedientes": 79, "expedientes_votados": 50, "fracciones": 7, "hasta": "2026-07-15", "intervenciones": 2184, "leyes": 12, "menciones": 2841, "minutos": 7504, "mociones": 1777, "palabras": 687547, "unanimes_pct": 28.4, "votaciones": 296, "votaciones_con_nominal": 283, "votos_nominales": 15479}}], "global": {"periodos": 8, "procesados": 8, "actas_corpus": 4887, "actas_procesadas": 4876, "votaciones": 31844, "intervenciones": 202920, "anios": 32, "leyes": 1707, "palabras": 81706311, "menciones": 481209, "votos_nominales": 477291, "mociones": 15843, "minutos": 605555, "divididas": 21187, "expedientes_votados": 3889, "curules_periodo": 57}}</script>
 <script>
 (() => {
   const D = JSON.parse(document.getElementById("datos").textContent);
@@ -421,20 +538,175 @@
   // Legislaturas
   document.getElementById("periodos").innerHTML = D.periodos.slice().reverse().map(p => {
     const m = p.metricas, abierto = p.estado === "publicado" && p.url;
+    const horas = m ? Math.round(m.minutos / 60) : 0;
     const detalle = m ? `<dl>
-        <div><dt>Actas</dt><dd>${nf.format(m.actas)}</dd></div>
+        <div><dt>Sesiones</dt><dd>${nf.format(m.actas)}</dd></div>
         <div><dt>Votaciones</dt><dd>${nf.format(m.votaciones)}</dd></div>
-        <div><dt>Intervenciones</dt><dd>${nf.format(m.intervenciones)}</dd></div>
-        <div><dt>Expedientes</dt><dd>${nf.format(m.expedientes || 0)}</dd></div>
-      </dl>` : `<dl><div><dt>Corpus</dt><dd>${nf.format(p.actas)} actas</dd></div></dl>`;
+        <div><dt>Leyes</dt><dd>${nf.format(m.leyes || 0)}</dd></div>
+        <div><dt>Bancadas</dt><dd>${nf.format(m.fracciones || 0)}</dd></div>
+        <div><dt>Horas de sesión</dt><dd>${nf.format(horas)}</dd></div>
+        <div><dt>Palabras</dt><dd>${m.palabras ? (m.palabras/1e6).toFixed(1).replace(".", ",")+" M" : "—"}</dd></div>
+      </dl>
+      <p class="per-gancho">${
+        m.convergencia
+          ? `El par más afín votó igual el <b>${m.convergencia.mas_cercano.pct} %</b> de
+             las veces; el más distante, el <b>${m.convergencia.mas_distante.pct} %</b>.`
+          : `<b>${nf.format(m.divididas)}</b> votaciones con voto en contra, las que
+             marcan dónde se rompió el consenso.`}</p>`
+      : `<dl><div><dt>Corpus</dt><dd>${nf.format(p.actas)} actas</dd></div></dl>`;
     const cuerpo = `<div class="anios">${p.nombre}</div>
       <div class="rango">${m && m.desde ? `${m.desde} → ${m.hasta}` : "Corpus identificado"}</div>
       ${detalle}
       <div class="estado ${p.estado}"><i></i>${ESTADOS[p.estado] || "Pendiente"}</div>
-      ${abierto ? '<div class="abrir">Abrir el análisis →</div>' : ""}`;
+      ${abierto ? '<div class="abrir">Abrir la aplicación <span>se enciende al entrar</span></div>' : ""}`;
     return abierto ? `<a class="per" href="${p.url}">${cuerpo}</a>`
                    : `<div class="per" aria-disabled="true">${cuerpo}</div>`;
   }).join("");
+
+  // ── Portada de hallazgos ────────────────────────────────────────────────
+  // Se arma de lo que las aplicaciones ya calcularon; aquí no se computa nada.
+  // Cada hallazgo dice su cifra, qué significa y dónde comprobarlo.
+  const corto = (f) => f.replace(/^(Partido|Coalición)\s+/, "");
+  const conMet = D.periodos.filter(p => p.metricas);
+  const ult = conMet[conMet.length - 1];
+
+  // Cada hallazgo se toma del periodo donde ES notable, no del último. Tomarlos
+  // todos de la legislatura en curso llenaba la portada con las cifras de un
+  // periodo de 37 sesiones —"12 expedientes aprobados"— que no invitan a entrar
+  // a ningún lado. Así cada tarjeta es un máximo real de 32 años.
+  const mejor = (fn, filtro = () => true) => conMet
+    .filter(p => filtro(p.metricas))
+    .sort((a, b) => fn(b.metricas) - fn(a.metricas))[0];
+
+  const noticias = [];
+  // 1. La polarización más marcada: el par más distante de todo el corpus.
+  const pol = conMet.filter(p => p.metricas.convergencia)
+    .sort((a, b) => a.metricas.convergencia.mas_distante.pct
+                  - b.metricas.convergencia.mas_distante.pct)[0];
+  if (pol) {
+    const c = pol.metricas.convergencia;
+    noticias.push({
+      tipo: "afin", periodo: pol, etiqueta: "Convergencia · " + pol.nombre,
+      cifra: c.mas_distante.pct + " %",
+      titular: `${corto(c.mas_distante.a)} y ${corto(c.mas_distante.b)} casi nunca
+        votaron igual`,
+      texto: `Sobre ${nf.format(c.divididas)} votaciones divididas —aquellas en que la
+        cámara no votó en bloque— esas dos bancadas coincidieron apenas el
+        ${c.mas_distante.pct} % de las veces. En el otro extremo del mismo periodo,
+        ${corto(c.mas_cercano.a)} y ${corto(c.mas_cercano.b)} votaron igual el
+        <b>${c.mas_cercano.pct} %</b>. Entre esos dos números cabe todo el espectro.`,
+      ancla: "#convergencia"
+    });
+  }
+  // 2. La legislatura que más leyes sacó.
+  const leg = mejor(m => m.leyes || 0);
+  if (leg && leg.metricas.leyes) {
+    const m = leg.metricas, pct = Math.round(100 * m.leyes / (m.expedientes_votados || 1));
+    noticias.push({
+      tipo: "leyes", periodo: leg, etiqueta: "Producción legislativa · " + leg.nombre,
+      cifra: nf.format(m.leyes),
+      titular: "expedientes aprobados en segundo debate",
+      texto: `Es la cifra más alta de las ocho legislaturas. Llegaron a votarse
+        ${nf.format(m.expedientes_votados)}, así que <b>${pct} %</b> completó el trámite;
+        el resto quedó por el camino y el panel dice en qué etapa exacta se detuvo cada
+        uno.`,
+      ancla: "#expedientes"
+    });
+  }
+  // 3. Dónde más se habló.
+  const hab = mejor(m => m.palabras || 0);
+  if (hab && hab.metricas.palabras) {
+    const m = hab.metricas;
+    noticias.push({
+      tipo: "discurso", periodo: hab, etiqueta: "Discurso · " + hab.nombre,
+      cifra: (m.palabras / 1e6).toFixed(1).replace(".", ",") + " M",
+      titular: "palabras dichas desde la curul",
+      texto: `${nf.format(m.intervenciones)} intervenciones en
+        ${nf.format(Math.round(m.minutos / 60))} horas de sesión, con
+        ${nf.format(m.menciones)} menciones a ${nf.format(m.entidades)} instituciones y
+        lugares. De ahí sale <b>a qué región y a qué entidad le dedica atención cada
+        diputación</b>, que no siempre es la que la eligió.`,
+      ancla: "#discurso"
+    });
+  }
+  // 4. Dónde se puede seguir el voto persona por persona.
+  const nom = mejor(m => m.votos_nominales || 0);
+  if (nom && nom.metricas.votos_nominales) {
+    const m = nom.metricas;
+    noticias.push({
+      tipo: "nominal", periodo: nom, etiqueta: "Voto nominal · " + nom.nombre,
+      cifra: nf.format(m.votos_nominales),
+      titular: "veces que el acta dice quién votó qué",
+      texto: `Nombre por nombre, en ${nf.format(m.votaciones_con_nominal)} de las
+        ${nf.format(m.votaciones)} votaciones del periodo. Es lo que permite ver
+        <b>quién rompió con su fracción</b>, en qué asunto y con quién terminó votando
+        —el material del análisis de transfugismo—.`,
+      ancla: "#transfugismo"
+    });
+  }
+
+  document.getElementById("portada").innerHTML = noticias.map(n => `
+    <a class="noticia noticia--${n.tipo}" href="${n.periodo.url || "#abrir"}${n.ancla}">
+      <p class="kicker">${n.etiqueta}</p>
+      <p class="noticia-cifra">${n.cifra}</p>
+      <h3>${n.titular}</h3>
+      <p class="noticia-texto">${n.texto}</p>
+      <span class="noticia-ir">Verlo en la aplicación de ${n.periodo.nombre} →</span>
+    </a>`).join("");
+
+  // ── Espectros: un mapa por legislatura, comparables entre sí ─────────────
+  const COLORES = {};
+  const paleta = ["#008024","#00A4A7","#005CA9","#29ABE2","#F26522","#FFEF00",
+                  "#8E44AD","#C0392B","#9B1B30","#F9DC24","#6D4C9F","#00857C",
+                  "#F58220","#7A4C2E","#8895A7"];
+  const colorDe = (f) => {
+    if (!(f in COLORES)) COLORES[f] = paleta[Object.keys(COLORES).length % paleta.length];
+    return COLORES[f];
+  };
+  const conEspectro = D.periodos.filter(p => p.metricas && p.metricas.convergencia
+                                            && p.metricas.convergencia.disposicion);
+  const sinEspectro = D.periodos.filter(p => !conEspectro.includes(p));
+  document.getElementById("espectros").innerHTML = conEspectro.slice().reverse().map(p => {
+    const c = p.metricas.convergencia;
+    const pts = c.disposicion.map(d => {
+      const x = (d.x + 0.5) * 180 + 20, y = (0.5 - d.y) * 180 + 20;
+      // La etiqueta va arriba o abajo según de qué lado del mapa esté el
+      // punto: puesta siempre debajo, las bancadas apiñadas se tapaban entre sí.
+      const dy = d.y < 0 ? -12 : 19;
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7"
+                fill="${d.color || colorDe(d.fraccion)}" class="pt">
+                <title>${d.fraccion}</title></circle>
+              <text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" class="pt-rot"
+                text-anchor="middle">${d.sigla}</text>`;
+    }).join("");
+    const lineas = c.pares.filter(x => x.pct >= 70).map(x => {
+      const A = c.disposicion.find(d => d.fraccion === x.a);
+      const B = c.disposicion.find(d => d.fraccion === x.b);
+      if (!A || !B) return "";
+      return `<line x1="${((A.x+0.5)*180+20).toFixed(1)}" y1="${((0.5-A.y)*180+20).toFixed(1)}"
+                    x2="${((B.x+0.5)*180+20).toFixed(1)}" y2="${((0.5-B.y)*180+20).toFixed(1)}"
+                    class="lz" style="opacity:${(0.10 + (x.pct-70)/100).toFixed(2)}"></line>`;
+    }).join("");
+    return `<a class="espectro" href="${p.url || "#abrir"}#convergencia">
+      <p class="espectro-titulo">${p.nombre}</p>
+      <svg viewBox="0 0 220 220" aria-label="Afinidad entre bancadas en ${p.nombre}">
+        ${lineas}${pts}
+      </svg>
+      <p class="espectro-pie"><b>${c.mas_cercano.pct} %</b> el par más afín ·
+        <b>${c.mas_distante.pct} %</b> el más distante<br>
+        <span>${nf.format(c.divididas)} votaciones divididas</span></p>
+    </a>`;
+  }).join("") + (sinEspectro.length ? `
+    <div class="espectro espectro--vacio">
+      <p class="espectro-titulo">${sinEspectro.map(p => p.nombre).reverse().join(" · ")}</p>
+      <p class="espectro-nota">Sin mapa, y no por falta de análisis. El acta de estos
+        periodos da el conteo agregado —«cuarenta y dos a favor, seis en contra»— pero
+        <b>no dice quién votó qué</b>. Sin el voto nombre por nombre no hay forma de
+        saber de qué lado quedó cada bancada, y la afinidad no se puede calcular sin
+        inventarla. El voto nominal aparece en el corpus a partir de 2018.</p>
+      <p class="espectro-nota">Lo demás sí está: votaciones, expedientes, discurso,
+        asistencia y agenda. Las aplicaciones de esos periodos se abren igual.</p>
+    </div>` : "");
 
   // Comparativas
   const conDatos = D.periodos.filter(p => p.metricas);
