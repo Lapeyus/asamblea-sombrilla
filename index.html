@@ -123,6 +123,9 @@
   .espectro .eje-rot{font-size:7.5px;fill:var(--tenue);opacity:.75;letter-spacing:.06em;
     text-transform:uppercase}
   .nota-fuente{margin:1rem 0 0;font-size:.86rem;color:var(--tenue)}
+  .nota-ausencia{margin:1rem 0 0;font-size:.88rem;color:var(--suave);line-height:1.6;
+    max-width:78ch;padding-left:.9rem;border-left:2px solid var(--linea-viva)}
+  .nota-ausencia b{color:var(--tinta);font-weight:600}
 
   /* ── Mapas de atención territorial ───────────────────────────────────── */
   .mapas{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
@@ -447,6 +450,7 @@
     ideología declarada: <b>sale de contar votos</b>. El eje dice dónde dicen estar los
     partidos; el mapa dice con quién terminan votando.</p>
   <div class="espectros reveal" id="espectros"></div>
+  <p class="nota-ausencia" id="sin-espectro"></p>
   <p class="nota-fuente">En orden, de la legislatura más antigua a la actual. La línea
     punteada es el eje izquierda-derecha: fíjese en cuánto se separan de ella las bancadas
     —esa distancia es información que una recta no puede guardar—. Los mapas son la
@@ -764,19 +768,21 @@
   const conEspectro = D.periodos.filter(p => p.metricas && p.metricas.convergencia
                                             && p.metricas.convergencia.disposicion);
   const sinEspectro = D.periodos.filter(p => !conEspectro.includes(p));
-  // La ficha de los periodos sin mapa va PRIMERO: son los más antiguos y la
-  // sección se lee de 1998 al presente, como el resto de la página.
-  document.getElementById("espectros").innerHTML = (sinEspectro.length ? `
-    <div class="espectro espectro--vacio">
-      <p class="espectro-titulo">${sinEspectro.map(p => p.nombre).join(" · ")}</p>
-      <p class="espectro-nota">Sin mapa, y no por falta de análisis. El acta de estos
-        periodos da el conteo agregado —«cuarenta y dos a favor, seis en contra»— pero
-        <b>no dice quién votó qué</b>. Sin el voto nombre por nombre no hay forma de
-        saber de qué lado quedó cada bancada, y la afinidad no se puede calcular sin
-        inventarla. El voto nominal aparece en el corpus a partir de 2018.</p>
-      <p class="espectro-nota">Lo demás sí está: votaciones, expedientes, discurso,
-        asistencia y agenda. Las aplicaciones de esos periodos se abren igual.</p>
-    </div>` : "") + conEspectro.map(p => {
+  // Los periodos sin mapa iban como una tarjeta más en la rejilla, y una
+  // tarjeta solo de texto entre mapas pesa lo mismo que ellos y compite por la
+  // mirada: la ausencia terminaba siendo lo primero que se veía. Baja a nota al
+  // pie, que es el peso que le corresponde.
+  const sinMapa = document.getElementById("sin-espectro");
+  if (sinMapa) {
+    sinMapa.innerHTML = sinEspectro.length ? `<b>Sin mapa:
+      ${sinEspectro.map(p => p.nombre).join(", ")}</b> — y no por falta de análisis. El
+      acta de esos periodos da el conteo agregado, «cuarenta y dos a favor, seis en
+      contra», pero no dice quién votó qué; sin el voto nombre por nombre no hay forma de
+      saber de qué lado quedó cada bancada. El voto nominal aparece en el corpus a partir
+      de 2018. Lo demás sí está —votaciones, expedientes, discurso, asistencia y agenda—
+      y esas aplicaciones se abren igual.` : "";
+  }
+  document.getElementById("espectros").innerHTML = conEspectro.map(p => {
     const c = p.metricas.convergencia;
     const pts = c.disposicion.map(d => {
       const x = (d.x + 0.5) * 180 + 20, y = (0.5 - d.y) * 150 + 22;
