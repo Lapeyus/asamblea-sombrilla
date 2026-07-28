@@ -127,6 +127,11 @@
     max-width:78ch;padding-left:.9rem;border-left:2px solid var(--linea-viva)}
   .nota-ausencia b{color:var(--tinta);font-weight:600}
 
+  .correo{margin:1.2rem 0 .2rem;font-size:.95rem;color:var(--suave);line-height:1.6}
+  .correo a{color:var(--azul);font-weight:600;text-decoration:none;
+    border-bottom:1px solid rgba(30,116,232,.35);word-break:break-all}
+  .correo a:hover{border-bottom-color:var(--azul)}
+
   /* ── De prosa a base de datos ────────────────────────────────────────── */
   .tuberia{display:grid;gap:1rem;align-items:stretch;margin:1.6rem 0;
     grid-template-columns:1fr auto 1fr}
@@ -774,6 +779,12 @@
         privado para darle continuidad</b>, porque el control ciudadano necesita instrumentos
         concretos, y creo que la iniciativa ciudadana debe plasmarse en productos que cualquiera
         pueda usar, revisar y cuestionar.</p>
+      <!-- La dirección va escrita y no solo detrás del botón: quien quiere
+           escribir desde otro dispositivo, o guardarla para después, necesita
+           poder leerla y copiarla. -->
+      <p class="correo">Escríbame a
+        <a href="mailto:joseph.villarreal.lopez@gmail.com">joseph.villarreal.lopez@gmail.com</a>
+        — para corregir un dato, proponer un análisis o conversar sobre apoyo al proyecto.</p>
       <div class="contacto">
         <a class="boton" href="https://github.com/Lapeyus/asamblea-sombrilla">Ver el código en GitHub</a>
         <a class="boton boton--secundario" href="mailto:joseph.villarreal.lopez@gmail.com">Corregirme o apoyar el proyecto</a>
