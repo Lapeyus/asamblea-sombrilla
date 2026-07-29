@@ -280,28 +280,8 @@
     var(--azul) 0 6px,rgba(30,116,232,.45) 6px 12px)}
   .asis-val{font-variant-numeric:tabular-nums;font-weight:700;font-size:.9rem;
     text-align:right}
-  /* ── Hacia dónde votó quien se fue ────────────────────────────────────── */
-  .transfugas{display:grid;gap:.75rem}
-  .tf-caja{display:block;text-decoration:none;color:inherit;padding:1.1rem 1.2rem;
-    border:1px solid var(--linea);border-radius:16px;background:var(--tarjeta);
-    transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s}
-  .tf-caja:hover{transform:translateY(-3px);border-color:var(--linea-viva)}
-  .tf-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem;
-    margin-bottom:.75rem}
-  .tf-cab b{font-size:1rem;font-weight:700}
-  .tf-cab span{font-size:.8rem;color:var(--tenue)}
-  .tf-fila{display:grid;grid-template-columns:4.2rem 1fr 3.4rem;gap:.7rem;
-    align-items:center;padding:.2rem 0}
-  .tf-sig{font-size:.74rem;font-weight:700;letter-spacing:.03em;text-align:center;
-    padding:.16rem .3rem;border-left:3px solid;border-radius:2px}
-  .tf-pista{height:13px;border-radius:3px;background:rgba(120,170,255,.06);
-    position:relative}
-  .tf-pista i{position:absolute;inset:0 auto 0 0;border-radius:3px;display:block}
-  .tf-pct{font-variant-numeric:tabular-nums;font-weight:700;font-size:.86rem;
-    text-align:right}
-  .tf-fila.propia .tf-pct{color:var(--rojo)}
-  .tf-fila.nueva .tf-pct{color:var(--verde)}
-  .tf-pie{margin:.7rem 0 0;font-size:.8rem;color:var(--tenue)}
+  /* ── Hacia dónde se fue el voto: segundo aluvial, encadenado al primero ── */
+  .transfugas{display:grid;gap:1rem}
   .sub{margin:2.4rem 0 .4rem;font-size:1.25rem;font-weight:700;letter-spacing:-.01em}
 
   /* ── Poder efectivo ───────────────────────────────────────────────────── */
@@ -348,6 +328,12 @@
   .flujo-caja .fl-cinta{fill-opacity:.42;transition:fill-opacity .2s}
   .flujo-caja:hover .fl-cinta{fill-opacity:.6}
   .flujo-caja .fl-rot{font-size:11px;font-weight:700}
+  /* Las bancadas que siguen igual van casi transparentes: son el contexto que
+     sostiene el dibujo, no lo que se está contando. */
+  .flujo-caja .fl-quieta{fill-opacity:.10}
+  .flujo-caja:hover .fl-quieta{fill-opacity:.16}
+  .flujo-caja .fl-suelta{fill-opacity:.62}
+  .flujo-caja:hover .fl-suelta{fill-opacity:.8}
   .flujo-pie{display:flex;justify-content:space-between;margin:0;
     font-size:.78rem;color:var(--tenue);letter-spacing:.05em;text-transform:uppercase}
 
@@ -746,11 +732,12 @@
   <div class="flujo reveal" id="flujo-curules"></div>
 
   <h3 class="sub">Y hacia dónde se fue el voto</h3>
-  <p class="lede">El diagrama de arriba dice cuántas curules se movieron. No dice lo otro,
-    que es lo interesante: <b>declararse independiente no deja a nadie en el vacío</b>. A
-    partir de ese día se sigue votando, y ese comportamiento se puede medir contra cada
-    bancada. Para cada diputación se toman las votaciones divididas posteriores a su
-    salida y se cuenta con qué frecuencia quedó del mismo lado que cada fracción.</p>
+  <p class="lede">El diagrama de arriba dice cuántas curules se movieron. Este dice lo
+    otro, que es lo interesante: <b>declararse independiente no deja a nadie en el
+    vacío</b>. La columna izquierda es la misma con la que terminaba el gráfico anterior;
+    desde ahí, cada curul sin bancada viaja a la fracción con la que esa diputación
+    coincidió más al votar, ya independiente. Se cuentan solo las votaciones divididas
+    posteriores a su salida.</p>
   <div class="transfugas reveal" id="transfugas"></div>
   <p class="nota-fuente">Las posiciones de bancada se calculan <b>solo con quienes no se
     movieron</b>: contar a la propia diputación dentro de su antigua fracción inflaría el
@@ -1643,50 +1630,111 @@
     </a>`;
   }).join("");
 
-  // ── Hacia dónde votó quien dejó su fracción ─────────────────────────────
-  // Una caja por diputación: con qué bancada coincidió más después de irse y
-  // qué quedó de su parecido con la que dejó. Las dos cifras juntas son el
-  // hallazgo — en 2022-2026 hay quien pasó del 34 % con su antiguo partido al
-  // 86 % con el que estaba en el otro extremo de la cámara.
-  const MES = ["enero","febrero","marzo","abril","mayo","junio","julio",
-               "agosto","setiembre","octubre","noviembre","diciembre"];
-  const fechaCorta = (iso) => {
-    const [a, m] = String(iso).split("-");
-    return `${MES[+m - 1] || ""} de ${a}`;
-  };
+  // ── Hacia dónde se fue el voto ──────────────────────────────────────────
+  // Segundo aluvial, encadenado con el primero: su columna izquierda ES la
+  // columna derecha de aquel —la cámara como terminó—. Desde ahí, el bloque de
+  // independientes se deshace y cada curul viaja a la bancada con la que esa
+  // diputación coincidió más al votar, ya declarada independiente.
+  //
+  // Las demás bancadas siguen de largo con una cinta tenue: sin ellas el
+  // dibujo parecería que solo existe el bloque independiente, y lo que se
+  // quiere mostrar es justamente que ese bloque no es un lugar donde quedarse.
   const conTf = D.periodos.filter(p => p.metricas && p.metricas.composicion
                                     && (p.metricas.composicion.transfugas || []).length);
-  document.getElementById("transfugas").innerHTML = conTf.flatMap(p =>
-    p.metricas.composicion.transfugas.map(t => {
-      // Se muestran las cuatro bancadas con las que más coincidió, más la
-      // propia si se quedó fuera: sin ella la caja no cuenta la historia.
-      const orden = t.afinidad.slice(0, 4);
-      if (!orden.some(a => a.sigla === t.desde)) {
-        const propia = t.afinidad.find(a => a.sigla === t.desde);
-        if (propia) orden.push(propia);
+  document.getElementById("transfugas").innerHTML = conTf.map(p => {
+    const c = p.metricas.composicion, tot = c.curules || 57;
+    const ALTO = 300, ANCHO = 620, COL = 74, MARGEN = 6;
+
+    // Cada tránsfuga arrastra su curul a la bancada con la que más coincidió.
+    const destinos = {};
+    c.transfugas.forEach(t => {
+      const top = t.afinidad[0];
+      if (!top) return;
+      (destinos[top.sigla] = destinos[top.sigla] || []).push({ nombre: t.nombre, pct: top.pct });
+    });
+    const movidas = Object.values(destinos).reduce((n, l) => n + l.length, 0);
+    if (!movidas) return "";
+
+    const efectiva = {};
+    c.final.forEach(b => { efectiva[b.sigla] = { ...b }; });
+    Object.entries(destinos).forEach(([sig, gente]) => {
+      if (efectiva.INDEP) efectiva.INDEP.curules -= gente.length;
+      if (efectiva[sig]) efectiva[sig].curules += gente.length;
+      else {
+        const ref = (c.bancadas.find(b => b.sigla === sig)) || {};
+        efectiva[sig] = { sigla: sig, curules: gente.length,
+                          nombre: ref.nombre || sig, color: ref.color || "#8895A7" };
       }
-      const top = t.afinidad[0], propia = t.afinidad.find(a => a.sigla === t.desde);
-      const filas = orden.map(a => {
-        const clase = a.sigla === t.desde ? " propia" : (a === top ? " nueva" : "");
-        return `<div class="tf-fila${clase}">
-          <span class="tf-sig" style="border-color:${a.color};color:${a.color}">${a.sigla}</span>
-          <span class="tf-pista"><i style="width:${a.pct}%;background:${a.color};
-                opacity:${a.sigla === t.desde || a === top ? .95 : .45}"></i></span>
-          <span class="tf-pct">${pc(a.pct.toFixed(1))}</span>
-        </div>`;
+    });
+    const derLista = Object.values(efectiva).filter(b => b.curules > 0)
+      .sort((a, b) => b.curules - a.curules);
+
+    const escala = (ALTO - MARGEN * Math.max(c.final.length, derLista.length)) / tot;
+    const poner = (lista, x) => {
+      let y = 0; const m = {};
+      lista.forEach(b => {
+        const h = b.curules * escala;
+        m[b.sigla] = { y, h, medio: y + h / 2, color: b.color, curules: b.curules };
+        y += h + MARGEN;
+      });
+      return m;
+    };
+    const izq = poner(c.final, 0), der = poner(derLista, ANCHO - COL);
+
+    const cajas = (m, x, anclaje) => Object.entries(m).map(([sig, b]) => `
+      <rect x="${x}" y="${b.y.toFixed(1)}" width="${COL}" height="${Math.max(b.h, 2).toFixed(1)}"
+            rx="3" fill="${b.color}"></rect>
+      <text x="${anclaje === "start" ? x + 6 : x + COL - 6}" y="${(b.medio + 4).toFixed(1)}"
+            text-anchor="${anclaje}" class="fl-rot"
+            fill="${contraste(b.color)}">${sig} ${b.curules}</text>`).join("");
+
+    const x0 = COL, x1 = ANCHO - COL, cx = (x0 + x1) / 2;
+    const cinta = (yA, yB, h, color, clase, titulo) =>
+      `<path d="M${x0},${yA.toFixed(1)} C${cx},${yA.toFixed(1)} ${cx},${yB.toFixed(1)} ${x1},${yB.toFixed(1)}
+               L${x1},${(yB + h).toFixed(1)} C${cx},${(yB + h).toFixed(1)} ${cx},${(yA + h).toFixed(1)} ${x0},${(yA + h).toFixed(1)} Z"
+            fill="${color}" class="${clase}"><title>${titulo}</title></path>`;
+
+    const usadoIzq = {}, usadoDer = {};
+    // Primero las que siguen de largo, para que las cintas del bloque
+    // independiente queden dibujadas encima y no se pierdan bajo ellas.
+    const quietas = c.final.filter(b => b.sigla !== "INDEP" && der[b.sigla]).map(b => {
+      const a = izq[b.sigla], d = der[b.sigla];
+      const h = b.curules * escala;
+      usadoIzq[b.sigla] = h; usadoDer[b.sigla] = h;
+      return cinta(a.y, d.y, h, b.color, "fl-cinta fl-quieta",
+                   `${b.sigla}: ${b.curules} curules que no se movieron`);
+    }).join("");
+
+    const llegadas = Object.entries(destinos)
+      .sort((a, b) => b[1].length - a[1].length).map(([sig, gente]) => {
+        const a = izq.INDEP, d = der[sig];
+        if (!a || !d) return "";
+        const h = gente.length * escala;
+        const yA = a.y + (usadoIzq.INDEP || 0);
+        const yB = d.y + (usadoDer[sig] || 0);
+        usadoIzq.INDEP = (usadoIzq.INDEP || 0) + h;
+        usadoDer[sig] = (usadoDer[sig] || 0) + h;
+        const quien = gente.map(g => `${g.nombre} (${pc(g.pct.toFixed(1))})`).join(", ");
+        return cinta(yA, yB, h, d.color, "fl-cinta fl-suelta",
+                     `${gente.length} curul${gente.length > 1 ? "es" : ""} → ${sig}: ${quien}`);
       }).join("");
-      const pie = propia && top.sigla !== t.desde
-        ? `Coincidía con ${t.desde} en el ${pc(propia.pct.toFixed(1))} de las votaciones divididas;
-           con ${top.sigla}, en el <b>${pc(top.pct.toFixed(1))}</b>.`
-        : `Después de irse siguió votando como ${top.sigla}: ${pc(top.pct.toFixed(1))}.`;
-      return `<a class="tf-caja" href="${p.url || "#abrir"}#transfugismo">
-        <div class="tf-cab"><b>${t.nombre}</b>
-          <span>dejó ${t.desde_nombre.replace(/^Partido\s+/, "")} en ${fechaCorta(t.fecha)}
-            · ${nf.format(t.votaciones)} votaciones después</span></div>
-        ${filas}
-        <p class="tf-pie">${pie}</p>
-      </a>`;
-    })).join("");
+
+    const mayor = Object.entries(destinos).sort((a, b) => b[1].length - a[1].length)[0];
+    const suelto = c.final.find(b => b.sigla === "INDEP");
+    return `<a class="flujo-caja" href="${p.url || "#abrir"}#transfugismo">
+      <p class="espectro-titulo">${p.nombre}</p>
+      <p class="flujo-titular">De ${suelto ? suelto.curules : movidas} independientes,
+        <b>${mayor[1].length}</b> terminaron votando con
+        <b>${mayor[0]}</b></p>
+      <svg viewBox="0 0 ${ANCHO} ${ALTO}"
+           aria-label="Con qué bancada votó cada independiente en ${p.nombre}">
+        ${quietas}${llegadas}${cajas(izq, 0, "start")}${cajas(der, ANCHO - COL, "end")}
+      </svg>
+      <p class="flujo-pie"><span>Como terminó</span><span>Con quién votó</span></p>
+      <p class="espectro-pie">${movidas} curules sin bancada, repartidas por la fracción
+        con la que cada una coincidió más en las votaciones divididas</p>
+    </a>`;
+  }).join("");
 
   // ── Asistencia ──────────────────────────────────────────────────────────
   // Una sola serie: no lleva leyenda —el título la nombra— y el eje arranca en
