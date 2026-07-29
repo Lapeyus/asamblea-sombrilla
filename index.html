@@ -362,6 +362,8 @@
                  padding:.2rem .5rem;border-radius:99px;margin-bottom:.6rem}
   .n1{background:color-mix(in srgb,var(--verde) 16%,transparent);color:var(--verde)}
   .n2{background:color-mix(in srgb,var(--azul) 16%,transparent);color:var(--azul)}
+  /* .n3 queda a la espera: la capa de interpretación asistida por modelos se
+     retiró de la página mientras el pipeline corra sin LLM. */
   .n3{background:color-mix(in srgb,var(--violeta) 16%,transparent);color:var(--violeta)}
   .fuente p{margin:0;color:var(--suave);font-size:.88rem}
   .fuente h3{margin:0 0 .4rem;font-size:.98rem}
@@ -744,9 +746,10 @@
 
 <section class="env">
   <h2>De dónde sale cada dato</h2>
-  <p class="lede">Todo dato pertenece a uno de tres niveles, y en los paneles siempre se indica
+  <p class="lede">Todo dato pertenece a uno de dos niveles, y en los paneles siempre se indica
     a cuál. Cuando la extracción contradice al registro oficial, manda el oficial y la
-    discrepancia se marca señalando a la extracción, nunca al revés.</p>
+    discrepancia se marca señalando a la extracción, nunca al revés. Hoy no hay una tercera
+    capa: <b>nada de lo que se publica aquí lo escribió un modelo de lenguaje</b>.</p>
   <div class="fuentes reveal">
     <div class="fuente">
       <span class="nivel n1">Registro oficial</span>
@@ -761,12 +764,6 @@
       <p>Lo que este proyecto deriva del acta: conteos, etapas de debate, asistencia, duración,
         vínculos entre expedientes y votaciones. Verificable contra el acta fuente, con el margen
         de error propio de una extracción automatizada.</p>
-    </div>
-    <div class="fuente">
-      <span class="nivel n3">Interpretación</span>
-      <h3>Capa asistida por modelos</h3>
-      <p>Resúmenes, categorías temáticas y lecturas de contexto. Nunca sustituyen un dato
-        oficial: acompañan al texto original que las sustenta y se marcan como tales.</p>
     </div>
   </div>
 </section>
