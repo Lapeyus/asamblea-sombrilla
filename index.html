@@ -246,6 +246,30 @@
     .formas li{grid-template-columns:1fr;gap:.2rem}
   }
 
+  /* ── El cálculo del kappa, paso a paso ────────────────────────────────── */
+  .calculo{border:1px solid var(--linea);border-radius:16px;background:var(--tarjeta);
+    padding:1.4rem 1.5rem;margin:1.4rem 0}
+  .calculo h3{margin:0 0 .7rem;font-size:1.12rem;font-weight:700;letter-spacing:-.01em}
+  .calculo-intro{margin:0 0 1.2rem;color:var(--suave);font-size:.92rem;line-height:1.65}
+  .pasos{list-style:none;margin:0;padding:0;display:grid;gap:1.1rem}
+  .pasos li{display:grid;grid-template-columns:1.9rem 1fr;gap:.9rem;align-items:start}
+  .paso-n{display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:50%;
+    background:color-mix(in srgb,var(--azul) 20%,transparent);color:var(--azul);
+    font-weight:800;font-size:.85rem}
+  .pasos h4{margin:.15rem 0 .45rem;font-size:.98rem;font-weight:700}
+  .pasos h4 em{font-style:normal;color:var(--tenue);font-weight:600}
+  .pasos p{margin:0 0 .5rem;color:var(--suave);font-size:.9rem;line-height:1.6}
+  .pasos p:last-child{margin-bottom:0}
+  /* La fórmula en monoespaciada y sobre su propio fondo: es una operación, no
+     una frase, y el ojo tiene que poder saltar directo a ella. */
+  .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;
+    background:rgba(120,170,255,.07);border-left:2px solid var(--azul);
+    padding:.55rem .8rem;border-radius:0 6px 6px 0;color:var(--tinta) !important;
+    overflow-x:auto}
+  .formula b{color:var(--azul)}
+  .calculo-cierre{margin:1.2rem 0 0;padding-top:1rem;border-top:1px solid var(--linea);
+    color:var(--suave);font-size:.9rem;line-height:1.65}
+
   /* ── Composición de la cámara y asistencia ───────────────────────────── */
   .composicion,.asistencia{display:grid;gap:.5rem}
   .comp-fila,.asis-fila{display:grid;align-items:center;gap:.85rem;padding:.5rem .7rem;
@@ -684,13 +708,71 @@
     punteada es el eje izquierda-derecha: fíjese en cuánto se separan de ella las bancadas
     —esa distancia es información que una recta no puede guardar—. Toque cualquiera para
     abrirlo en su fuente.</p>
-  <p class="nota-fuente"><b>κ es el kappa de Cohen</b>, y no el porcentaje de coincidencia,
-    porque el porcentaje engaña: dos bancadas que aprueban casi todo coinciden mucho sin
-    tener afinidad alguna. En 2022-2026 el par más afín votó igual el 94,3 % de las veces,
-    pero por puro azar habría coincidido el 70,7 %; κ = 0,81 mide lo que sobra de esa
-    base. Va de −1 a 1: por encima de 0,8 el acuerdo es muy fuerte, bajo cero hay
-    desacuerdo sistemático. El <b>estrés</b> dice cuánto deforma el mapa las distancias
-    reales al aplanarlas — por debajo de 0,20 se considera fiable.</p>
+  <div class="calculo">
+    <p class="kicker">Cómo se calcula</p>
+    <h3>Del porcentaje al kappa, con el caso real de 2022-2026</h3>
+    <p class="calculo-intro">Nueva República y la Unidad Social Cristiana son el par más
+      afín de esa legislatura. Se toman las <b>4 078 votaciones divididas</b> en que ambas
+      fijaron postura — divididas porque en las unánimes todos coinciden con todos y no
+      distinguen nada, y con postura porque una bancada partida por la mitad no
+      representa un lado.</p>
+
+    <ol class="pasos">
+      <li>
+        <span class="paso-n">1</span>
+        <div>
+          <h4>La coincidencia cruda <em>P<sub>o</sub></em></h4>
+          <p>Se cuenta en cuántas de esas votaciones quedaron del mismo lado, sin importar
+            cuál. Es la cifra intuitiva y la que se suele publicar.</p>
+          <p class="formula">P<sub>o</sub> = coincidencias ÷ votaciones
+            = <b>3 845 ÷ 4 078 = 94,3 %</b></p>
+        </div>
+      </li>
+      <li>
+        <span class="paso-n">2</span>
+        <div>
+          <h4>Lo que daría el azar <em>P<sub>e</sub></em></h4>
+          <p>Aquí está la trampa. Cada bancada tiene su propia inclinación: en esas mismas
+            votaciones, Nueva República se puso del lado del «sí» un <b>16,8 %</b> de las
+            veces y la Unidad un <b>18,8 %</b> — o sea que las dos votaron casi siempre en
+            contra. Dos bancadas con una inclinación tan marcada <b>y en la misma
+            dirección</b> van a coincidir muchísimo aunque no tengan nada que ver entre
+            sí, solo por repetir cada una su costumbre.</p>
+          <p>Se calcula suponiéndolas independientes: la probabilidad de que ambas digan
+            «sí» a la vez, más la de que ambas digan «no» a la vez.</p>
+          <p class="formula">P<sub>e</sub> = (0,168 × 0,188) + (0,832 × 0,812)
+            = 0,032 + 0,676 = <b>70,7 %</b></p>
+          <p>Es decir: <b>siete de cada diez coincidencias ya estaban puestas antes de
+            empezar</b>, y eso no es afinidad política, es aritmética.</p>
+        </div>
+      </li>
+      <li>
+        <span class="paso-n">3</span>
+        <div>
+          <h4>El kappa <em>κ</em></h4>
+          <p>Se descuenta esa base. El numerador es lo que coincidieron <b>de más</b>; el
+            denominador, todo lo que podían coincidir de más una vez descontado el azar.
+            Así el resultado no depende de la inclinación de cada bancada.</p>
+          <p class="formula">κ = (P<sub>o</sub> − P<sub>e</sub>) ÷ (1 − P<sub>e</sub>)
+            = (0,943 − 0,707) ÷ (1 − 0,707)
+            = 0,236 ÷ 0,293 = <b>0,81</b></p>
+          <p>Del 94,3 % aparente, <b>solo 23,6 puntos son afinidad real</b>; sobre los 29,3
+            que quedaban disponibles, eso es 0,81.</p>
+        </div>
+      </li>
+    </ol>
+
+    <p class="calculo-cierre">κ va de −1 a 1. <b>1</b> es votar siempre igual; <b>0</b> es
+      indistinguible de dos bancadas que se ignoran; <b>bajo cero</b> es desacuerdo
+      sistemático, coincidir menos de lo que daría el azar. Por convención, arriba de 0,8
+      el acuerdo es muy fuerte y entre 0,4 y 0,6 es moderado. El caso extremo aclara por
+      qué hace falta: dos bancadas que aprobaran el 95 % de todo cada una coincidirían el
+      90 % de las veces con κ ≈ 0 — noventa por ciento de acuerdo y cero afinidad.</p>
+  </div>
+
+  <p class="nota-fuente">El <b>estrés</b> es otra cosa: dice cuánto deforma el mapa las
+    distancias reales al aplanar muchas dimensiones a dos. Por debajo de 0,20 se considera
+    fiable; para precisión hay que mirar los pares uno a uno, no el dibujo.</p>
 </section>
 
 <section class="env">
