@@ -460,7 +460,12 @@
   /* .n3 queda a la espera: la capa de interpretación asistida por modelos se
      retiró de la página mientras el pipeline corra sin LLM. */
   .n3{background:color-mix(in srgb,var(--violeta) 16%,transparent);color:var(--violeta)}
-  .fuente p{margin:0;color:var(--suave);font-size:.88rem}
+  .fuente p{margin:0 0 .6rem;color:var(--suave);font-size:.88rem}
+  .fuente p:last-child{margin-bottom:0}
+  /* El límite de la fuente va con la fuente, no en una nota al pie que
+     nadie relaciona con ella. */
+  .fuente-limite{font-size:.82rem !important;color:var(--tenue) !important;
+    padding-top:.55rem;border-top:1px solid var(--linea)}
   .fuente h3{margin:0 0 .4rem;font-size:.98rem}
   ul.limites{margin:0;padding-left:1.1rem;color:var(--suave);font-size:.9rem}
   ul.limites li{margin-bottom:.45rem}
@@ -939,6 +944,17 @@
       <p>Lo que este proyecto deriva del acta: conteos, etapas de debate, asistencia, duración,
         vínculos entre expedientes y votaciones. Verificable contra el acta fuente, con el margen
         de error propio de una extracción automatizada.</p>
+    </div>
+    <div class="fuente">
+      <span class="nivel n1">Registro oficial</span>
+      <h3>La transmisión de la sesión</h3>
+      <p>El canal de la Asamblea transmite el Plenario, y cada sesión que tiene video queda
+        enlazada al suyo — y cada intervención, al minuto en que ocurre. <b>1 365 sesiones y
+        55 169 intervenciones</b> tienen esa marca.</p>
+      <p class="fuente-limite">Empieza el <b>12 de enero de 2017</b>: antes de esa fecha el
+        canal publicaba notas de prensa, no sesiones. Y hasta 2020 lo hizo a saltos —2019
+        apenas llega al 5 %—. De 2021 en adelante la cobertura es del <b>98 %</b>. Lo que
+        falta no está: no es que no se haya buscado.</p>
     </div>
   </div>
 </section>
