@@ -470,7 +470,7 @@
        relevarse queda claro que hay más detrás y que esto es una vitrina, no
        un veredicto. -->
   <div class="portada-cab reveal">
-    <h2><span class="late" aria-hidden="true"></span>Cuatro de <b id="portada-total">…</b> hallazgos</h2>
+    <h2><span class="late" aria-hidden="true"></span><b id="portada-visibles">…</b> de <b id="portada-total">…</b> hallazgos</h2>
     <p>Se van relevando solos. Ninguno es la conclusión del proyecto: son muestras
       de lo que el corpus contesta cuando se le pregunta, y cada uno abre la
       aplicación de la que salió. Pase el cursor por encima para detenerlos.</p>
@@ -1129,13 +1129,13 @@
   });
 
   // ── El relevo ───────────────────────────────────────────────────────────
-  // Cuatro ranuras, cada una con su propia cola. Se reparten en round-robin
+  // Seis ranuras, cada una con su propia cola. Se reparten en round-robin
   // para que dos tarjetas vecinas nunca sean del mismo tipo, y se releva una
-  // sola a la vez: cuatro cambios simultáneos son un parpadeo, uno es una
-  // noticia nueva. Se detiene con el cursor encima —si no, el enlace cambiaría
-  // bajo el clic— y con la pestaña en segundo plano.
+  // sola a la vez: seis cambios simultáneos son un parpadeo, uno es una noticia
+  // nueva. Se detiene con el cursor encima —si no, el enlace cambiaría bajo el
+  // clic— y con la pestaña en segundo plano.
   const cont = document.getElementById("portada");
-  const RANURAS = Math.min(4, noticias.length);
+  const RANURAS = Math.min(6, noticias.length);
   // Antes de repartir se intercalan los tipos: el orden en que se construyeron
   // agrupa los de la misma familia, y repartirlo tal cual dejaba tres tarjetas
   // de convergencia juntas en la primera pantalla. Tomando uno de cada tipo por
@@ -1151,6 +1151,9 @@
   const cursor = colas.map(() => 0);
   const tot = document.getElementById("portada-total");
   if (tot) tot.textContent = nf.format(noticias.length);
+  const vis = document.getElementById("portada-visibles");
+  if (vis) vis.textContent = ["Ninguno", "Uno", "Dos", "Tres", "Cuatro", "Cinco",
+                              "Seis"][RANURAS] || RANURAS;
 
   cont.innerHTML = Array.from({length: RANURAS}, () => "<a class=\"noticia\"></a>").join("");
   const pinta = (s) => {
