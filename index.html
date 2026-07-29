@@ -66,6 +66,57 @@
   /* Legislaturas */
   .rejilla{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 
+  /* ── Muelle de legislaturas ───────────────────────────────────────────────
+     Ocho accesos fijos, uno por periodo, que acompañan al visitante durante
+     todo el recorrido. El resto de la página explica y compara; las
+     aplicaciones son a donde hay que ir, y hasta ahora solo se llegaba a ellas
+     bajando hasta la reja del final. Aquí están siempre a un clic.
+
+     El icono no es decorativo: es el hemiciclo de esa legislatura, con un punto
+     por cada dos curules, pintado con los colores reales de sus bancadas. Se
+     reconoce de un vistazo el bipartidismo azul y verde de 1998 y la mancha
+     morada de 2026, y eso invita a entrar mucho más que un número. */
+  .muelle{position:fixed;right:.85rem;top:50%;transform:translateY(-50%);z-index:40;
+    display:grid;gap:.3rem;justify-items:end;opacity:0;pointer-events:none;
+    transition:opacity .35s ease}
+  /* justify-items:end no es cosmético: al desplegarse una pastilla el carril
+     entero se ensancha, y sin esa línea las otras siete se pegaban al borde
+     izquierdo del nuevo ancho — todas saltaban de sitio al pasar el cursor. */
+  .muelle.visible{opacity:1;pointer-events:auto}
+  .muelle-item{display:flex;align-items:center;gap:.55rem;text-decoration:none;
+    color:var(--suave);background:rgba(4,24,64,.82);backdrop-filter:blur(9px);
+    border:1px solid var(--linea);border-radius:999px;padding:.3rem;
+    max-width:2.9rem;overflow:hidden;white-space:nowrap;
+    transition:max-width .3s cubic-bezier(.2,.8,.2,1),border-color .2s,
+               background .2s,transform .2s}
+  .muelle-item:hover,.muelle-item:focus-visible{max-width:14rem;color:var(--tinta);
+    border-color:var(--linea-viva);background:rgba(6,32,84,.95);transform:translateX(-3px)}
+  .muelle-item[aria-disabled="true"]{opacity:.42;pointer-events:none}
+  .muelle-hemi{flex:0 0 auto;width:2.2rem;height:2.2rem;display:block}
+  .muelle-txt{display:flex;flex-direction:column;padding-right:.7rem;line-height:1.15}
+  .muelle-txt b{font-size:.8rem;font-weight:700;letter-spacing:.01em}
+  .muelle-txt span{font-size:.68rem;color:var(--tenue)}
+  /* En pantalla angosta el carril lateral tapa el texto: pasa a ser una cinta
+     inferior que se desliza con el dedo. */
+  .muelle-corto{display:none}
+  @media (max-width:900px){
+    .muelle-txt b{display:none}
+    .muelle-corto{display:block;font-size:.8rem;font-weight:700}
+    .muelle{right:0;left:0;top:auto;bottom:0;transform:none;grid-auto-flow:column;
+      justify-content:start;gap:.35rem;padding:.45rem .6rem;overflow-x:auto;
+      background:linear-gradient(0deg,rgba(2,16,46,.97),rgba(2,16,46,.72));
+      border-top:1px solid var(--linea);scrollbar-width:none}
+    .muelle::-webkit-scrollbar{display:none}
+    .muelle-item{max-width:none;padding:.25rem .55rem .25rem .25rem}
+    .muelle-item:hover{transform:none}
+    .muelle-txt{padding-right:.15rem}
+    .muelle-txt span{display:none}
+    body{padding-bottom:4rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .muelle,.muelle-item{transition:none}
+  }
+
   /* ── Los tres niveles ─────────────────────────────────────────────────── */
   .escalera{list-style:none;counter-reset:none;padding:0;margin:1.6rem 0 0;
     display:grid;gap:.9rem}
@@ -831,6 +882,10 @@
   </div>
 </section>
 
+<!-- El muelle de legislaturas: se llena desde los datos y aparece en cuanto el
+     visitante deja atrás la portada. -->
+<nav class="muelle" id="muelle" aria-label="Aplicaciones por legislatura"></nav>
+
 <footer class="env">
   Proyecto de investigación ciudadana, de código abierto ·
   <a href="https://github.com/Lapeyus/asamblea-sombrilla">código y metodología en GitHub</a>.
@@ -1316,6 +1371,60 @@
         <span>más nombrada: ${top.provincia} · ${pc(top.pct)}</span></p>
     </a>`;
   }).join("");
+
+  // ── Muelle de legislaturas ──────────────────────────────────────────────
+  // Un acceso permanente por periodo. El icono es el hemiciclo de esa
+  // legislatura: catorce escaños dibujados en arco, repartidos entre las
+  // bancadas en proporción a sus curules y con su color real. No hace falta
+  // leer nada para ver que 1998 son dos bloques y 2026 uno solo.
+  const ESCAÑOS = 14, RADIO = 15, CENTRO = 18;
+  const hemiciclo = (bancadas) => {
+    // Se reparte por resto mayor: con catorce puntos y seis bancadas, redondear
+    // cada cuota por su cuenta deja huecos o puntos de más.
+    const total = bancadas.reduce((n, b) => n + b.curules, 0) || 1;
+    const cuotas = bancadas.map(b => ({ color: b.color, exacto: ESCAÑOS * b.curules / total }));
+    cuotas.forEach(c => { c.puntos = Math.floor(c.exacto); });
+    let faltan = ESCAÑOS - cuotas.reduce((n, c) => n + c.puntos, 0);
+    cuotas.slice().sort((a, b) => (b.exacto % 1) - (a.exacto % 1))
+      .forEach(c => { if (faltan-- > 0) c.puntos++; });
+    const colores = cuotas.flatMap(c => Array(c.puntos).fill(c.color));
+    return colores.map((color, i) => {
+      // De izquierda a derecha sobre el arco, como se sienta la cámara.
+      const a = Math.PI - (Math.PI * (i + 0.5)) / ESCAÑOS;
+      return `<circle cx="${(CENTRO + RADIO * Math.cos(a)).toFixed(1)}"
+                      cy="${(CENTRO + 2 - RADIO * Math.sin(a)).toFixed(1)}"
+                      r="2.1" fill="${color}"/>`;
+    }).join("");
+  };
+
+  document.getElementById("muelle").innerHTML = D.periodos.map(p => {
+    const m = p.metricas, abierto = p.estado === "publicado" && p.url;
+    const bancadas = (m && m.composicion && m.composicion.bancadas) || [];
+    const arco = bancadas.length
+      ? hemiciclo(bancadas)
+      : `<circle cx="18" cy="18" r="12" fill="none" stroke="var(--linea-viva)"
+                 stroke-width="1.5" stroke-dasharray="3 3"/>`;
+    const mayor = bancadas[0];
+    const pie = abierto
+      ? (mayor ? `${mayor.sigla} ${mayor.curules} · abrir` : "Abrir la aplicación")
+      : (ESTADOS[p.estado] || "Pendiente");
+    const cuerpo = `<svg class="muelle-hemi" viewBox="0 0 36 26" aria-hidden="true">${arco}</svg>
+      <span class="muelle-txt"><b>${p.nombre}</b>
+        <i class="muelle-corto">${p.nombre.split(/[–-]/)[0]}</i>
+        <span>${pie}</span></span>`;
+    return abierto
+      ? `<a class="muelle-item" href="${p.url}"
+            title="Abrir el análisis de ${p.nombre}">${cuerpo}</a>`
+      : `<span class="muelle-item" aria-disabled="true"
+              title="${p.nombre}: ${pie}">${cuerpo}</span>`;
+  }).join("");
+
+  // Aparece al dejar atrás la portada: sobre el título compite con él, y quien
+  // acaba de llegar todavía no sabe qué son esas ocho aplicaciones.
+  const muelle = document.getElementById("muelle");
+  const asomar = () => muelle.classList.toggle("visible", scrollY > innerHeight * 0.55);
+  addEventListener("scroll", asomar, { passive: true });
+  asomar();
 
   // ── Composición de la cámara ────────────────────────────────────────────
   // Barras apiladas: la pregunta es de reparto —cuánto de un total fijo tuvo
