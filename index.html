@@ -198,6 +198,22 @@
   .espectro-titulo{margin:0 0 .2rem;font-weight:700;letter-spacing:.02em}
   .espectro-pie{margin:.4rem 0 0;font-size:.8rem;color:var(--suave);line-height:1.5}
   .espectro-pie span{color:var(--tenue)}
+
+  /* Lectura destacada del eje de una legislatura concreta. Va aparte de las
+     tarjetas porque no compite con ellas: las tarjetas comparan, esto explica. */
+  .destape{margin:1.6rem 0 0;padding:1.3rem 1.4rem;border-radius:18px;
+    border:1px solid var(--linea-viva);background:rgba(6,32,84,.55)}
+  .destape-eyebrow{margin:0;font-size:.74rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--azul);font-weight:700}
+  .destape h3{margin:.3rem 0 .8rem;font-size:1.18rem;line-height:1.35}
+  .destape p{margin:0 0 .7rem;color:var(--suave);line-height:1.65;font-size:.94rem}
+  .destape p:last-child{margin-bottom:0}
+  .destape b{color:var(--tinta)}
+  .destape-eje{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;
+    padding:.7rem .9rem;margin:.2rem 0 .9rem;border-radius:12px;
+    background:rgba(0,0,0,.20);font-size:.86rem;letter-spacing:.04em}
+  .destape-eje .izq,.destape-eje .der{font-size:.74rem;color:var(--tenue);
+    letter-spacing:.08em}
   .espectro-nota{margin:.6rem 0 0;font-size:.86rem;color:var(--tenue);line-height:1.55}
   .espectro--vacio{opacity:.72}
   .espectro .pt{stroke:var(--fondo);stroke-width:2}
@@ -714,6 +730,28 @@
     ideología declarada: <b>sale de contar votos</b>. El eje dice dónde dicen estar los
     partidos; el mapa dice con quién terminan votando.</p>
   <div class="espectros reveal" id="espectros"></div>
+
+  <div class="destape reveal">
+    <p class="destape-eyebrow">Lo que devolvió el tablero</p>
+    <h3>2014-2018: la legislatura más polarizada del corpus, y no se sabía</h3>
+    <p>Su acta no publica el voto individual en el texto — por eso este periodo figuraba
+      sin mapa. Pero sí incrusta, como imagen, la hoja del tablero electrónico con el voto
+      de cada diputación. Leerla devolvió <b>19 691 votos nominales</b> y, con ellos, las
+      <b>197 votaciones divididas</b> que sostienen este eje.</p>
+    <p class="destape-eje"><span class="izq">← izquierda</span>
+      <b>FA</b> · · · · · · · · · · <b>PRC PLN PAC</b> · · <b>PUSC PRN</b> · · <b>ADC</b> · <b>ML</b>
+      <span class="der">derecha →</span></p>
+    <p>Dos cosas que solo se ven con el voto nombre por nombre. La primera:
+      <b>Movimiento Libertario y Frente Amplio quedaron a κ −0,652</b>, el desacuerdo
+      sistemático más fuerte de las legislaturas medidas —las demás no pasan de −0,36—.
+      Coincidieron en el 17 % de las votaciones divididas.</p>
+    <p>La segunda es más incómoda: en el centro, <b>PAC y PLN son el par más afín del
+      periodo</b> (κ +0,696; coincidieron el 85 %). El partido que llegó al Gobierno en
+      2014 compitiendo contra el bipartidismo terminó votando con Liberación Nacional más
+      que con nadie. El eje no lo deduce de ninguna ideología declarada: sale de contar
+      votos.</p>
+  </div>
+
   <p class="nota-ausencia" id="sin-espectro"></p>
   <p class="nota-fuente">En orden, de la legislatura más antigua a la actual. La línea
     punteada es el eje izquierda-derecha: fíjese en cuánto se separan de ella las bancadas
@@ -1613,9 +1651,9 @@
       ${sinEspectro.map(p => p.nombre).join(", ")}</b> — y no por falta de análisis. El
       acta de esos periodos da el conteo agregado, «cuarenta y dos a favor, seis en
       contra», pero no dice quién votó qué; sin el voto nombre por nombre no hay forma de
-      saber de qué lado quedó cada bancada. El voto nominal aparece en el corpus a partir
-      de 2018. Lo demás sí está —votaciones, expedientes, discurso, asistencia y agenda—
-      y esas aplicaciones se abren igual.` : "";
+      saber de qué lado quedó cada bancada. Son legislaturas anteriores al tablero
+      electrónico: ahí la ausencia sí es de la fuente. Lo demás sí está —votaciones,
+      expedientes, discurso, asistencia y agenda— y esas aplicaciones se abren igual.` : "";
   }
   document.getElementById("espectros").innerHTML = conEspectro.map(p => {
     const c = p.metricas.convergencia;
