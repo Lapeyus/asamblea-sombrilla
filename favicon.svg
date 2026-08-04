@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Asamblea CR</title>
+  <rect width="64" height="64" rx="14" fill="#02102e"/>
+  <path d="M13 37a19 19 0 0 1 38 0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M19 37a13 13 0 0 1 26 0" fill="none" stroke="#1e74e8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M25 37a7 7 0 0 1 14 0" fill="none" stroke="#ce1126" stroke-width="6" stroke-linecap="round"/>
+  <path d="M11 46h42" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>
