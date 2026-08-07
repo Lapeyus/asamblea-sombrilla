@@ -553,6 +553,18 @@
   .breve p b{color:var(--suave)}
   .proyeccion-nota{font-size:.78rem;color:var(--tenue);border-left:2px solid var(--ambar);
     padding-left:.7rem;margin-top:1rem}
+  /* Los artículos de actualidad: piezas fechadas con dato verificado. Son
+     instantáneas de redacción —las cifras se comprobaron contra la base del
+     periodo el día del fechado— y cada una remata en su aplicación fuente. */
+  .articulos{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    margin-top:2.2rem}
+  .articulo{border-top:1px solid var(--linea-viva);padding-top:1.1rem}
+  .articulo h3{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.25rem;
+    line-height:1.3;margin:0 0 .6rem}
+  .articulo p{color:var(--suave);font-size:.92rem;line-height:1.6;margin:0 0 .8rem}
+  .articulo p b{color:var(--tinta)}
+  .articulo .matiz-art{font-size:.78rem;color:var(--tenue);border-left:2px solid var(--linea-viva);
+    padding-left:.7rem}
   /* La llamada a la aplicación del periodo: aquí se da visibilidad al
      hallazgo, pero la profundización SIEMPRE está en el panel de Cloud Run.
      Esta breve va destacada para que ese camino nunca se pierda. */
@@ -810,6 +822,51 @@
         son aritmética sobre lo ya actuado, no pronóstico político.</p>
     </article>
     <aside id="act-breves"></aside>
+  </div>
+
+  <!-- Artículos de redacción: cifras comprobadas contra la base del periodo
+       en la fecha del fechado, con la consulta reproducible en la aplicación.
+       No se regeneran solos — si el dato evoluciona, se reescriben. -->
+  <div class="articulos reveal">
+    <article class="articulo">
+      <p class="fechado">San José — <b>7 de agosto de 2026</b></p>
+      <h3>La primera convocatoria extraordinaria cierra con 16 proyectos aprobados —
+        15 sin un solo voto en contra</h3>
+      <p>Entre el 1 de mayo y el 30 de julio, bajo convocatoria del Ejecutivo, el Plenario
+        aprobó en segundo debate <b>16 proyectos de ley</b>. Lo notable es el margen:
+        <b>15 de los 16 pasaron por unanimidad</b>, con votaciones de 50 a 57 votos a favor
+        y ninguno en contra. Entre ellos, la ley para promover la transición energética en
+        el sector combustibles, la protección del desarrollo económico de la Zona Sur, la
+        reforma al Código de Comercio para garantizar el registro y un acuerdo de
+        transporte aéreo internacional.</p>
+      <p>La única aprobación dividida fue el expediente <b>25.589</b>, que llegó al segundo
+        debate tras una reiteración y se aprobó <b>30 a 24</b> — la excepción que muestra
+        cuánto consenso hubo en el resto.</p>
+      <p class="matiz-art">Aprobación en segundo debate según las actas procesadas de la
+        convocatoria extraordinaria (50 sesiones). El detalle, votación por votación, está
+        en la aplicación del periodo.</p>
+    </article>
+    <article class="articulo">
+      <p class="fechado">San José — <b>7 de agosto de 2026</b></p>
+      <h3>Trece proyectos rumbo al archivo: la prórroga que no llegó</h3>
+      <p>La vía silenciosa al archivo es el <b>plazo cuatrienal</b> (Art. 119): cuando el
+        Plenario niega la prórroga, el proyecto muere. En la convocatoria extraordinaria se
+        votaron 18 de esas prórrogas y <b>13 fueron rechazadas</b>. Entre lo archivado:
+        la regulación del <b>transporte privado colaborativo</b> (plataformas tipo Uber,
+        exp. 23.110), los <b>microcréditos</b> de fomento (23.101), las <b>zonas económicas
+        especiales</b> para inversión y empleo (23.117), una reforma a la <b>ley de
+        competencia</b> (23.218), la <b>protección de usuarios de servicios</b> (23.219),
+        la <b>simplificación de trámites</b> (23.242) y una reforma al propio Reglamento
+        legislativo (23.123).</p>
+      <p>¿Quién archiva? El voto nominal es nítido: <b>Pueblo Soberano votó contra las 13
+        prórrogas en bloque — 345 votos en contra y ninguno a favor</b>. Liberación
+        Nacional se partió casi a la mitad (94 en contra, 89 a favor), mientras el Frente
+        Amplio defendió mayoritariamente mantener vivos los proyectos (47 a favor de
+        prorrogar, 32 en contra).</p>
+      <p class="matiz-art">Cinco de los trece expedientes no tienen título registrado en
+        las actas procesadas; se cuentan pero no se describen. El voto por diputación de
+        cada prórroga puede revisarse en la aplicación del periodo.</p>
+    </article>
   </div>
 </section>
 
