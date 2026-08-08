@@ -831,6 +831,17 @@
     <aside id="act-breves"></aside>
   </div>
 
+  <!-- Ecos de la memoria (#96): para la última sesión, los debates más
+       parecidos de legislaturas anteriores. Presente y pasado en una mesa. -->
+  <div id="ecos-bloque" hidden>
+    <h3 class="sub">Cuando esto se discutió antes</h3>
+    <p class="lede" id="ecos-resumen"></p>
+    <div class="articulos reveal" id="ecos-lista"></div>
+    <p class="nota-fuente">Parecido semántico entre las intervenciones de fondo de la última
+      sesión y los 28 años de discursos: cada eco enlaza la legislatura donde ya se dijo algo
+      muy parecido. Similitud de tema y redacción — no identidad de posición.</p>
+  </div>
+
   <!-- Artículos de redacción: cifras comprobadas contra la base del periodo
        en la fecha del fechado, con la consulta reproducible en la aplicación.
        No se regeneran solos — si el dato evoluciona, se reescriben. -->
@@ -2597,6 +2608,25 @@ async function cargarDatos() {
       document.getElementById("series-tematicas-bloque").hidden = false;
     })
     .catch(() => { /* sin series: el bloque queda oculto */ });
+
+  // ── Ecos de la memoria (#96): mismo contrato ────────────────────────────
+  fetch(`${BUCKET_DATOS}/ecos.json`, { cache: "no-cache" })
+    .then(r => r.ok ? r.json() : null)
+    .then(e => {
+      if (!e || !e.ecos || !e.ecos.length) return;
+      document.getElementById("ecos-resumen").innerHTML =
+        `Lo dicho en la sesión del <b>${e.sesion_fecha}</b> tiene ecos en
+         ${e.ecos.length} legislaturas anteriores.`;
+      document.getElementById("ecos-lista").innerHTML = e.ecos.map(x => `
+        <article class="articulo">
+          <p class="fechado">${x.antes.fecha} · <b>${x.antes.periodo.replace("_", "–")}</b></p>
+          <p><b>${x.antes.orador || "—"}</b>${x.antes.fraccion ? ` (${x.antes.fraccion})` : ""}:
+             «${x.antes.trozo}…»</p>
+          <p class="matiz-art">Hoy: ${x.hoy.orador || "—"} — «${(x.hoy.trozo || "").slice(0, 150)}…»</p>
+        </article>`).join("");
+      document.getElementById("ecos-bloque").hidden = false;
+    })
+    .catch(() => { /* sin ecos: el bloque queda oculto */ });
 
   // Hallazgos
   const top = (fn, etiqueta, formato = v => nf.format(v)) => {
