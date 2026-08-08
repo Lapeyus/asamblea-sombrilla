@@ -431,6 +431,19 @@
     border-radius:3px 3px 0 0;min-height:2px}
   .serie-anual .anio-col b{font-size:.68rem;font-weight:600;color:var(--tenue);
     text-align:center;height:1.1rem;line-height:1.1rem;overflow:visible;white-space:nowrap}
+  /* Temática × destino: una fila por tema, barra apilada ley/archivo/trámite */
+  .tematicas{display:grid;gap:.45rem}
+  .tem-fila{display:grid;grid-template-columns:minmax(150px,220px) 1fr auto;
+    gap:.7rem;align-items:center;font-size:.85rem}
+  .tem-fila .pista{height:12px;border-radius:99px;display:flex;overflow:hidden;
+    background:color-mix(in srgb,var(--suave) 14%,transparent)}
+  .tem-fila .seg-ley{background:var(--azul)}
+  .tem-fila .seg-arch{background:color-mix(in srgb,var(--rojo) 72%,transparent)}
+  .tem-fila .val{font-variant-numeric:tabular-nums;color:var(--tenue);white-space:nowrap}
+  .tem-leyenda{display:flex;gap:1.2rem;font-size:.78rem;color:var(--tenue);
+    margin:.2rem 0 .8rem;flex-wrap:wrap}
+  .tem-leyenda i{display:inline-block;width:.75rem;height:.75rem;border-radius:3px;
+    vertical-align:-.1rem;margin-right:.35rem}
   .paneles{display:grid;gap:1.2rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
   .panel{background:var(--tarjeta);border:1px solid var(--linea);border-radius:16px;padding:1.2rem 1.3rem;box-shadow:var(--sombra)}
   .panel h3{margin:0 0 .2rem;font-size:1rem}
@@ -1083,6 +1096,16 @@
       legislaturas, no sobre los fragmentos por periodo: es la única vista de esta
       página que atraviesa los cortes constitucionales. Los años sin barra no
       tienen actas digitalizadas en el corpus.</p>
+
+    <h3 class="sub">De qué se legisla, y qué suerte corre cada tema</h3>
+    <p class="lede" id="tematicas-resumen"></p>
+    <div class="panel reveal">
+      <div class="tematicas" id="tematicas-destino"></div>
+    </div>
+    <p class="nota-fuente">La temática sale del título oficial de cada expediente en el
+      SIL, clasificado por similitud semántica contra la taxonomía de la propia Asamblea;
+      el destino —ley o archivo— es el registro oficial. El resto sigue en trámite. Los
+      expedientes cuyo título no acerca a ningún tema quedan fuera en vez de forzarse.</p>
   </div>
 </section>
 
@@ -2462,6 +2485,35 @@ async function cargarDatos() {
         `De <b>${desde}</b> a <b>${hasta}</b>, sin cortes por legislatura. El año más
          intenso fue <b>${pico.anio}</b>: ${nf.format(pico.sesiones)} sesiones plenarias
          y ${nf.format(pico.discursos)} intervenciones registradas.`;
+
+      // Temática × destino, del catálogo autoritativo (#97 + maestro del SIL)
+      const tem = c.tematicas || [];
+      if (tem.length) {
+        const maxN = Math.max(...tem.map(t => t.n));
+        const tot = tem.reduce((s, t) => s + t.n, 0);
+        const totLey = tem.reduce((s, t) => s + t.leyes, 0);
+        const totArch = tem.reduce((s, t) => s + t.archivados, 0);
+        document.getElementById("tematicas-resumen").innerHTML =
+          `${nf.format(tot)} expedientes con temática y destino conocidos: el
+           <b>${pc((100 * totLey / tot).toFixed(1))}</b> llegó a ley y el
+           <b>${pc((100 * totArch / tot).toFixed(1))}</b> terminó en el archivo.`;
+        document.getElementById("tematicas-destino").innerHTML =
+          `<div class="tem-leyenda"><span><i class="seg-ley" style="background:var(--azul)"></i>ley</span>
+            <span><i style="background:color-mix(in srgb,var(--rojo) 72%,transparent)"></i>archivo</span>
+            <span><i style="background:color-mix(in srgb,var(--suave) 14%,transparent)"></i>en trámite</span></div>` +
+          tem.map(t => {
+            const w = 100 * t.n / maxN;
+            return `<div class="tem-fila" title="${t.tematica}: ${nf.format(t.n)} expedientes · ${nf.format(t.leyes)} leyes · ${nf.format(t.archivados)} archivados">
+              <span>${t.tematica}</span>
+              <span class="pista" style="width:${w}%">
+                <span class="seg-ley" style="flex:${t.leyes}"></span>
+                <span class="seg-arch" style="flex:${t.archivados}"></span>
+                <span style="flex:${Math.max(t.n - t.leyes - t.archivados, 0)}"></span>
+              </span>
+              <span class="val">${nf.format(t.n)}</span>
+            </div>`;
+          }).join("");
+      }
       document.getElementById("comparativa-bq").hidden = false;
     })
     .catch(() => { /* sin comparativa: el bloque queda oculto */ });
