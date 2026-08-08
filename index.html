@@ -1106,6 +1106,18 @@
       SIL, clasificado por similitud semántica contra la taxonomía de la propia Asamblea;
       el destino —ley o archivo— es el registro oficial. El resto sigue en trámite. Los
       expedientes cuyo título no acerca a ningún tema quedan fuera en vez de forzarse.</p>
+
+    <h3 class="sub">La cuota chayote: cuántas leyes no cambian nada nacional</h3>
+    <p class="lede" id="chayote-resumen"></p>
+    <div class="panel reveal">
+      <div class="tematicas" id="chayote-serie"></div>
+    </div>
+    <p class="nota-fuente">«Proyecto chayote» es la jerga legislativa para lo de
+      inexistente impacto nacional aunque beneficie a una comunidad concreta. Se cuenta
+      con una regla fija y publicada: autorizaciones, donaciones y segregaciones de
+      bienes; declaratorias y benemeritazgos; días y símbolos nacionales; denominaciones
+      de obra pública. Sin modelo y sin criterio editorial caso a caso — la regla exacta
+      vive en el repositorio y cualquiera puede recontar.</p>
   </div>
 </section>
 
@@ -2513,6 +2525,28 @@ async function cargarDatos() {
               <span class="val">${nf.format(t.n)}</span>
             </div>`;
           }).join("");
+      }
+      // La cuota chayote (#107): % de las leyes de cada legislatura que son
+      // chayote según la regla determinista del catálogo.
+      const ch = (c.chayote && c.chayote.por_legislatura) || [];
+      const cerradasCh = ch.filter(p => p.leyes >= 30);
+      if (cerradasCh.length) {
+        const maxPct = Math.max(...cerradasCh.map(p => p.pct_leyes || 0), 1);
+        const pico = cerradasCh.slice().sort((a, b) => b.pct_leyes - a.pct_leyes)[0];
+        const enCurso = ch.find(p => p.leyes < 30);
+        document.getElementById("chayote-resumen").innerHTML =
+          `En las legislaturas cerradas, entre el <b>${pc(Math.min(...cerradasCh.map(p => p.pct_leyes)))}</b>
+           y el <b>${pc(pico.pct_leyes)}</b> de las leyes aprobadas fueron chayote — el pico,
+           ${pico.periodo.replace("_", "–")}.${enCurso ? ` La legislatura en curso lleva
+           <b>${nf.format(enCurso.leyes_chay)}</b> entre sus ${nf.format(enCurso.leyes)} leyes.` : ""}`;
+        document.getElementById("chayote-serie").innerHTML = cerradasCh.map(p => `
+          <div class="tem-fila" title="${p.periodo.replace("_", "–")}: ${nf.format(p.leyes_chay)} de ${nf.format(p.leyes)} leyes">
+            <span>${p.periodo.replace("_", "–")}</span>
+            <span class="pista" style="width:${100 * p.pct_leyes / maxPct}%">
+              <span class="seg-arch" style="flex:1"></span>
+            </span>
+            <span class="val">${pc(p.pct_leyes)} de ${nf.format(p.leyes)} leyes</span>
+          </div>`).join("");
       }
       document.getElementById("comparativa-bq").hidden = false;
     })
