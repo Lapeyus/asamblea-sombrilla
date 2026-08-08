@@ -1107,6 +1107,17 @@
       el destino —ley o archivo— es el registro oficial. El resto sigue en trámite. Los
       expedientes cuyo título no acerca a ningún tema quedan fuera en vez de forzarse.</p>
 
+    <div id="series-tematicas-bloque" hidden>
+      <h3 class="sub">La deriva de la atención: cuatro temas, año a año</h3>
+      <p class="lede" id="series-tematicas-resumen"></p>
+      <div class="paneles reveal" id="series-tematicas"></div>
+      <p class="nota-fuente">Cada serie cuenta los fragmentos de discurso del año
+        semánticamente cercanos al tema —umbral relativo autocalibrado, en fragmentos por
+        mil— sobre los 338 mil fragmentos de las ocho legislaturas. Mide intensidad de la
+        atención, no un censo de menciones: inmune a que cada época lo diga con otras
+        palabras.</p>
+    </div>
+
     <h3 class="sub">La cuota chayote: cuántas leyes no cambian nada nacional</h3>
     <p class="lede" id="chayote-resumen"></p>
     <div class="panel reveal">
@@ -2557,6 +2568,35 @@ async function cargarDatos() {
       document.getElementById("comparativa-bq").hidden = false;
     })
     .catch(() => { /* sin comparativa: el bloque queda oculto */ });
+
+  // ── Las series temáticas (#95): mismo contrato que la comparativa ───────
+  fetch(`${BUCKET_DATOS}/series_tematicas.json`, { cache: "no-cache" })
+    .then(r => r.ok ? r.json() : null)
+    .then(s => {
+      if (!s || !s.temas || !s.temas.length) return;
+      const picos = s.temas.map(t => {
+        const p = t.serie.slice().sort((a, b) => b.pm - a.pm)[0];
+        return `<b>${t.etiqueta.toLowerCase()}</b> en ${p.anio}`;
+      });
+      document.getElementById("series-tematicas-resumen").innerHTML =
+        `Cuándo ocupó el Plenario cada tema — los picos: ${picos.join(", ")}.`;
+      document.getElementById("series-tematicas").innerHTML = s.temas.map(t => {
+        const max = Math.max(...t.serie.map(a => a.pm), 0.1);
+        const desde = t.serie[0].anio, hasta = t.serie[t.serie.length - 1].anio;
+        const cols = [];
+        for (let y = desde; y <= hasta; y++) {
+          const a = t.serie.find(x => x.anio === y) || { anio: y, pm: 0, n: 0 };
+          cols.push(`<div class="anio-col" title="${a.anio}: ${String(a.pm).replace(".", ",")} ‰ (${nf.format(a.n)} fragmentos)">
+            <i style="height:${Math.round(100 * a.pm / max)}%"></i>
+            <b>${a.anio % 10 === 0 ? a.anio : ""}</b>
+          </div>`);
+        }
+        return `<div class="panel"><h3>${t.etiqueta}</h3>
+          <div class="serie-anual" style="height:90px">${cols.join("")}</div></div>`;
+      }).join("");
+      document.getElementById("series-tematicas-bloque").hidden = false;
+    })
+    .catch(() => { /* sin series: el bloque queda oculto */ });
 
   // Hallazgos
   const top = (fn, etiqueta, formato = v => nf.format(v)) => {
