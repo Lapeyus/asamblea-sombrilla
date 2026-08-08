@@ -2534,11 +2534,17 @@ async function cargarDatos() {
         const maxPct = Math.max(...cerradasCh.map(p => p.pct_leyes || 0), 1);
         const pico = cerradasCh.slice().sort((a, b) => b.pct_leyes - a.pct_leyes)[0];
         const enCurso = ch.find(p => p.leyes < 30);
+        const apr = c.chayote.aprobacion;
         document.getElementById("chayote-resumen").innerHTML =
           `En las legislaturas cerradas, entre el <b>${pc(Math.min(...cerradasCh.map(p => p.pct_leyes)))}</b>
            y el <b>${pc(pico.pct_leyes)}</b> de las leyes aprobadas fueron chayote — el pico,
            ${pico.periodo.replace("_", "–")}.${enCurso ? ` La legislatura en curso lleva
-           <b>${nf.format(enCurso.leyes_chay)}</b> entre sus ${nf.format(enCurso.leyes)} leyes.` : ""}`;
+           <b>${nf.format(enCurso.leyes_chay)}</b> entre sus ${nf.format(enCurso.leyes)} leyes.` : ""}${
+           apr ? ` Y contra la intuición: el chayote <b>no viaja más rápido</b> —
+           ${nf.format(apr.chayote.mediana_dias)} días de mediana hasta su aprobación, frente a
+           ${nf.format(apr.sustantiva.mediana_dias)} de la ley sustantiva— pero sí más unánime:
+           <b>${pc(apr.chayote.pct_unanime)}</b> sin un voto en contra, frente al
+           ${pc(apr.sustantiva.pct_unanime)}.` : ""}`;
         document.getElementById("chayote-serie").innerHTML = cerradasCh.map(p => `
           <div class="tem-fila" title="${p.periodo.replace("_", "–")}: ${nf.format(p.leyes_chay)} de ${nf.format(p.leyes)} leyes">
             <span>${p.periodo.replace("_", "–")}</span>
