@@ -2676,8 +2676,11 @@ async function cargarDatos() {
     })
     .catch(() => { /* sin series: el bloque queda oculto */ });
 
-  // ── Ecos de la memoria (#96): mismo contrato ────────────────────────────
-  fetch(`${BUCKET_DATOS}/ecos.json`, { cache: "no-cache" })
+  // ── Ecos de la memoria (#96): DESACTIVADO por decisión editorial ────────
+  // Las citas recuperadas no eran lo bastante cercanas para aportar valor
+  // analítico. El bloque #ecos-bloque queda hidden y este fetch apagado;
+  // para reactivar, quitar el «false &&» cuando el emparejador mejore.
+  false && fetch(`${BUCKET_DATOS}/ecos.json`, { cache: "no-cache" })
     .then(r => r.ok ? r.json() : null)
     .then(e => {
       if (!e || !e.ecos || !e.ecos.length) return;
