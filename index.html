@@ -1120,45 +1120,6 @@
       página que atraviesa los cortes constitucionales. Los años sin barra no
       tienen actas digitalizadas en el corpus.</p>
 
-    <div id="series-tematicas-bloque" hidden>
-      <h3 class="sub">Series temáticas del discurso, 2001-2026</h3>
-      <p class="lede" id="series-tematicas-resumen"></p>
-      <div class="paneles reveal" id="series-tematicas"></div>
-      <p class="nota-fuente"><b>Método.</b> Cada intervención del corpus (338 036
-        fragmentos de ~500 palabras) se representa como vector semántico. Para cada tema
-        se define una consulta de referencia y se cuentan, por año, los fragmentos cuya
-        distancia coseno queda bajo el percentil 2 de la distribución del tema —umbral
-        relativo, sin constantes arbitrarias—. La unidad es fragmentos por mil del año:
-        mide la intensidad de la atención y es robusta al cambio de vocabulario entre
-        épocas. No es un conteo de menciones literales.</p>
-    </div>
-
-    <div id="causas-bloque" hidden>
-      <h3 class="sub">Por qué se archivan los proyectos</h3>
-      <p class="lede" id="causas-resumen"></p>
-      <div class="panel reveal">
-        <div class="tematicas" id="causas-archivo"></div>
-      </div>
-      <p class="nota-fuente"><b>Método.</b> La causa proviene de la tabla de tramitación
-        del registro oficial de cada expediente archivado, cruzada con las votaciones de
-        prórroga del plazo cuatrienal registradas en las actas — el voto rechazado en el
-        Plenario corrobora o resuelve archivos que el registro anota sin causa. Cuando el
-        registro solo dice «archivo», se declara así: la categoría «sin causa anotada» es
-        un dato sobre la calidad del registro público, no una omisión de este análisis.</p>
-    </div>
-
-    <h3 class="sub">Proporción de leyes de alcance limitado («proyectos chayote»)</h3>
-    <p class="lede" id="chayote-resumen"></p>
-    <div class="panel reveal">
-      <div class="tematicas" id="chayote-serie"></div>
-    </div>
-    <p class="nota-fuente"><b>Método.</b> «Proyecto chayote» designa, en la jerga
-      legislativa costarricense, iniciativas sin impacto nacional aunque beneficien a una
-      comunidad específica. La clasificación aplica una regla determinista publicada en el
-      repositorio del proyecto: pertenencia a las categorías de autorizaciones, donaciones
-      y segregaciones de bienes, o declaratorias y benemeritazgos; o título que declare
-      días o símbolos nacionales, honores o denominaciones de obra pública. No interviene
-      ningún modelo ni criterio caso a caso; el conteo es reproducible por terceros.</p>
   </div>
 </section>
 
@@ -1184,8 +1145,50 @@
       100 % del archivo clasificado, todo con distancia semántica alta. El destino —ley o
       archivo— es el registro oficial; el resto sigue en trámite.</p>
   </div>
+
+  <div id="series-tematicas-bloque" hidden>
+    <h2>Series temáticas del discurso, 2001-2026</h2>
+    <p class="lede" id="series-tematicas-resumen"></p>
+    <div class="paneles reveal" id="series-tematicas"></div>
+    <p class="nota-fuente"><b>Método.</b> Cada intervención del corpus (338 036
+      fragmentos de ~500 palabras) se representa como vector semántico. Para cada tema
+      se define una consulta de referencia y se cuentan, por año, los fragmentos cuya
+      distancia coseno queda bajo el percentil 2 de la distribución del tema —umbral
+      relativo, sin constantes arbitrarias—. La unidad es fragmentos por mil del año:
+      mide la intensidad de la atención y es robusta al cambio de vocabulario entre
+      épocas. No es un conteo de menciones literales.</p>
+  </div>
+
+  <div id="causas-bloque" hidden>
+    <h2>Por qué se archivan los proyectos</h2>
+    <p class="lede" id="causas-resumen"></p>
+    <div class="panel reveal">
+      <div class="tematicas" id="causas-archivo"></div>
+    </div>
+    <p class="nota-fuente"><b>Método.</b> La causa proviene de la tabla de tramitación
+      del registro oficial de cada expediente archivado, cruzada con las votaciones de
+      prórroga del plazo cuatrienal registradas en las actas — el voto rechazado en el
+      Plenario corrobora o resuelve archivos que el registro anota sin causa. Cuando el
+      registro solo dice «archivo», se declara así: la categoría «sin causa anotada» es
+      un dato sobre la calidad del registro público, no una omisión de este análisis.</p>
+  </div>
+
+  <div id="chayote-bloque" hidden>
+    <h2>Proporción de leyes de alcance limitado («proyectos chayote»)</h2>
+    <p class="lede" id="chayote-resumen"></p>
+    <div class="panel reveal">
+      <div class="tematicas" id="chayote-serie"></div>
+    </div>
+    <p class="nota-fuente"><b>Método.</b> «Proyecto chayote» designa, en la jerga
+      legislativa costarricense, iniciativas sin impacto nacional aunque beneficien a una
+      comunidad específica. La clasificación aplica una regla determinista publicada en el
+      repositorio del proyecto: pertenencia a las categorías de autorizaciones, donaciones
+      y segregaciones de bienes, o declaratorias y benemeritazgos; o título que declare
+      días o símbolos nacionales, honores o denominaciones de obra pública. No interviene
+      ningún modelo ni criterio caso a caso; el conteo es reproducible por terceros.</p>
+  </div>
 </section>
-</div><!-- /analisis: temática -->
+</div><!-- /analisis: temática y clasificaciones -->
 
 <div class="cuaderno" data-cuaderno="analisis">
 <section class="env">
@@ -2651,6 +2654,8 @@ async function cargarDatos() {
             </span>
             <span class="val">${pc(p.pct_leyes)} de ${nf.format(p.leyes)} leyes</span>
           </div>`).join("");
+        // como la temática: cuaderno del análisis, candado propio
+        document.getElementById("chayote-bloque").hidden = false;
       }
       document.getElementById("comparativa-bq").hidden = false;
     })
