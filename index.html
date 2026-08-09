@@ -979,27 +979,26 @@
 
 </div><!-- /analisis: afinidad -->
 
-<div class="cuaderno" data-cuaderno="analisis">
+<div class="cuaderno" data-cuaderno="memoria">
 <section class="env">
-  <!-- La vitrina de hallazgos abre el análisis: cada tarjeta es un resultado
-       interpretativo —máximos, modelos, lecturas— y son resultados
-       de legislaturas cerradas y cada tarjeta abre su panel de origen. Quien
-       llega no quiere leer una declaración de intenciones, quiere ver algo que
-       no sabía. Cada tarjeta termina en la aplicación de donde salió.
+  <!-- La vitrina de hallazgos vive en la memoria: son números encontrados en
+       el corpus —descriptivos, de legislaturas cerradas—, no conclusiones
+       interpretativas. Cada tarjeta abre su panel de origen y termina en la
+       aplicación de donde salió.
 
        Rotan, y eso es deliberado: cuatro cifras fijas se leen como si fueran
        LA conclusión del proyecto, y no lo son —son muestras—. Viéndolas
        relevarse queda claro que hay más detrás y que esto es una vitrina, no
        un veredicto. -->
   <div class="portada-cab reveal">
-    <p class="kicker" style="width:100%;margin:0">En portada del análisis</p>
+    <p class="kicker" style="width:100%;margin:0">En portada de la memoria</p>
     <h2><span class="late" aria-hidden="true"></span><b id="portada-visibles">…</b> de <b id="portada-total">…</b> hallazgos</h2>
     <p>Las tarjetas muestran resultados de distintos periodos y cambian de forma automática.
       Cada una abre el dato en su panel de origen. Pase el cursor por encima para detenerlas.</p>
   </div>
   <div class="portada reveal" id="portada"></div>
 </section>
-</div><!-- /analisis: hallazgos -->
+</div><!-- /memoria: hallazgos -->
 <div class="cuaderno" data-cuaderno="analisis">
 <section class="env" id="poder">
   <h2>Influencia en votaciones divididas</h2>
@@ -1121,20 +1120,6 @@
       página que atraviesa los cortes constitucionales. Los años sin barra no
       tienen actas digitalizadas en el corpus.</p>
 
-    <h3 class="sub">Distribución temática de los expedientes y su destino</h3>
-    <p class="lede" id="tematicas-resumen"></p>
-    <div class="panel reveal">
-      <div class="tematicas" id="tematicas-destino"></div>
-    </div>
-    <p class="nota-fuente"><b>Método.</b> La temática sale del título oficial de cada
-      expediente en el SIL, clasificado por similitud semántica contra la taxonomía de la
-      propia Asamblea. Antes de clasificar se remueve del título la fórmula de reforma
-      («reforma del artículo N de la ley N.º…»), que no es materia; y las categorías
-      genéricas solo se asignan cuando superan con margen a la mejor específica — sin esa
-      regla, «Justicia y Leyes» absorbía uno de cada cuatro expedientes. Cobertura: el
-      100 % del archivo clasificado, todo con distancia semántica alta. El destino —ley o
-      archivo— es el registro oficial; el resto sigue en trámite.</p>
-
     <div id="series-tematicas-bloque" hidden>
       <h3 class="sub">Series temáticas del discurso, 2001-2026</h3>
       <p class="lede" id="series-tematicas-resumen"></p>
@@ -1178,6 +1163,29 @@
 </section>
 
 </div><!-- /memoria: comparativas -->
+
+<div class="cuaderno" data-cuaderno="analisis">
+<section class="env">
+  <!-- En el análisis y no en la memoria: la temática no es dato crudo del
+       registro, se produce con clasificación semántica contra la taxonomía
+       oficial — hay interpretación de por medio. -->
+  <div id="tematicas-bloque" hidden>
+    <h2>Distribución temática de los expedientes y su destino</h2>
+    <p class="lede" id="tematicas-resumen"></p>
+    <div class="panel reveal">
+      <div class="tematicas" id="tematicas-destino"></div>
+    </div>
+    <p class="nota-fuente"><b>Método.</b> La temática sale del título oficial de cada
+      expediente en el SIL, clasificado por similitud semántica contra la taxonomía de la
+      propia Asamblea. Antes de clasificar se remueve del título la fórmula de reforma
+      («reforma del artículo N de la ley N.º…»), que no es materia; y las categorías
+      genéricas solo se asignan cuando superan con margen a la mejor específica — sin esa
+      regla, «Justicia y Leyes» absorbía uno de cada cuatro expedientes. Cobertura: el
+      100 % del archivo clasificado, todo con distancia semántica alta. El destino —ley o
+      archivo— es el registro oficial; el resto sigue en trámite.</p>
+  </div>
+</section>
+</div><!-- /analisis: temática -->
 
 <div class="cuaderno" data-cuaderno="analisis">
 <section class="env">
@@ -2613,6 +2621,8 @@ async function cargarDatos() {
               <span class="val">${nf.format(t.n)}</span>
             </div>`;
           }).join("");
+        // el bloque vive en el cuaderno del análisis, con su propio candado
+        document.getElementById("tematicas-bloque").hidden = false;
       }
       // La cuota chayote (#107): % de las leyes de cada legislatura que son
       // chayote según la regla determinista del catálogo.
