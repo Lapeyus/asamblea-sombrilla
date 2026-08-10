@@ -1406,6 +1406,12 @@ const BUCKET_DATOS = "https://storage.googleapis.com/jumpstart-423621-u-actas-po
 
 async function cargarDatos() {
   const D = JSON.parse(document.getElementById("datos").textContent);
+  // La URL de un periodo se DERIVA de su id, jamás se lee de datos: los
+  // fragmentos del bucket y datos horneados traen direcciones run.app de la
+  // era de ocho servicios — el visitante debe ver siempre el dominio propio.
+  (D.periodos || []).forEach(p => {
+    if (p.id) p.url = `https://plenario.kerewes.com/p/${p.id}/`;
+  });
   try {
     const frescos = await Promise.all(D.periodos.map(p =>
       fetch(`${BUCKET_DATOS}/${p.id}.json`, { cache: "no-cache" })
