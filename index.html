@@ -1521,7 +1521,7 @@
         <li><b id="tuberia-votos">—</b> votos nominales, persona por persona</li>
         <li><b id="tuberia-instituciones">—</b> menciones institucionales y
           <b id="tuberia-territorio">—</b> menciones territoriales</li>
-        <li><b id="tuberia-expedientes">—</b> expedientes únicos seguidos por sus etapas</li>
+        <li><b id="tuberia-expedientes">—</b> expedientes debatidos en el Plenario, seguidos por sus etapas</li>
       </ul>
     </div>
   </div>
@@ -1759,7 +1759,13 @@ async function cargarDatos() {
     // Distintos, no la suma de los periodos: 3 132 expedientes aparecen en
     // más de una legislatura porque un proyecto puede arrastrarse años.
     // Sumar por periodo daría 11 812 y contaría dos veces el mismo trámite.
-    [G.expedientes_unicos, "expedientes únicos"],
+    //
+    // Y DEBATIDOS, no presentados: este número cuenta lo que las ACTAS
+    // mencionan. El archivo del SIL es mayor —12 695— porque ~4 000 proyectos
+    // se presentaron y jamás llegaron al Plenario; ese universo es el de la
+    // tarjeta de El Expediente. Dos cifras, dos preguntas: rotularlas igual
+    // hacía parecer que una de las dos estaba mal.
+    [G.expedientes_unicos, "expedientes debatidos en el Plenario"],
     [G.votaciones, "votaciones analizadas"],
     [G.intervenciones, "intervenciones registradas"],
   ].map(([v, t]) => `<div class="cifra"><b data-cuenta="${v}">0</b><span>${t}</span></div>`).join("");
